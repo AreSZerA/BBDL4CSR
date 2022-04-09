@@ -1,0 +1,152 @@
+Organizations:
+
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/dl4csr.org/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+
+  - &ClaytonUniversity
+    Name: ClaytonUniversityMSP
+    ID: ClaytonUniversityMSP
+    MSPDir: crypto-config/peerOrganizations/clayton-university.dl4csr.org/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ClaytonUniversityMSP.admin', 'ClaytonUniversityMSP.peer', 'ClaytonUniversityMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ClaytonUniversityMSP.admin', 'ClaytonUniversityMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ClaytonUniversityMSP.admin')"
+    AnchorPeers:
+      - Host: peer0.clayton-university.dl4csr.org
+        Port: 7051
+
+  - &GarytonUniversity
+    Name: GarytonUniversityMSP
+    ID: GarytonUniversityMSP
+    MSPDir: crypto-config/peerOrganizations/garyton-university.dl4csr.org/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('GarytonUniversityMSP.admin', 'GarytonUniversityMSP.peer', 'GarytonUniversityMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('GarytonUniversityMSP.admin', 'GarytonUniversityMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('GarytonUniversityMSP.admin')"
+    AnchorPeers:
+      - Host: peer1.garyton-university.dl4csr.org
+        Port: 7051
+
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_4_2: true
+  Orderer: &OrdererCapabilities
+    V1_4_2: true
+  Application: &ApplicationCapabilities
+    V1_4_2: true
+    V1_3: false
+    V1_2: false
+    V1_1: false
+
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+
+Orderer: &OrdererDefaults
+  OrdererType: solo
+#  OrdererType: kafka
+#  Kafka:
+#    Brokers:
+#      - 127.0.0.1:9092
+  Addresses:
+    - orderer.dl4csr.org:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+
+Profiles:
+
+  TwoOrgsOrdererGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererOrg
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *ClaytonUniversity
+          - *GarytonUniversity
+
+  TwoOrgsChannel:
+    Consortium: SampleConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *ClaytonUniversity
+        - *GarytonUniversity
+      Capabilities:
+        <<: *ApplicationCapabilities

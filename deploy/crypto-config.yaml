@@ -1,0 +1,21 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: dl4csr.org
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: ClaytonUniversity
+    Domain: clayton-university.dl4csr.org
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  - Name: GarytonUniversity
+    Domain: garyton-university.dl4csr.org
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
