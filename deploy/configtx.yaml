@@ -81,13 +81,17 @@ Application: &ApplicationDefaults
 
 
 Orderer: &OrdererDefaults
-  OrdererType: solo
-#  OrdererType: kafka
-#  Kafka:
-#    Brokers:
-#      - 127.0.0.1:9092
+  OrdererType: kafka
   Addresses:
-    - orderer.dl4csr.org:7050
+    - orderer1.dl4csr.org:7050
+    - orderer2.dl4csr.org:7050
+    - orderer3.dl4csr.org:7050
+  Kafka:
+    Brokers:
+      - kafka1.dl4csr.org:9092
+      - kafka2.dl4csr.org:9092
+      - kafka3.dl4csr.org:9092
+      - kafka4.dl4csr.org:9092
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10

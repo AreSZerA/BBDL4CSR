@@ -29,7 +29,7 @@ mkdir -p ./channel-artifacts
 mkdir -p ./crypto-config
 sudo rm -rf ./channel-artifacts/*
 sudo rm -rf ./crypto-config/*
-docker-compose down
+docker-compose -f docker-compose-zookeeper.yaml down --remove-orphans
 
 print_step "Generates certifications, genesis block, and channel configuration transactions"
 cryptogen generate --config=./crypto-config.yaml
@@ -49,27 +49,33 @@ export CLAYTON_UNIVERSITY_CA_PK=$(cd crypto-config/peerOrganizations/clayton-uni
 export GARYTON_UNIVERSITY_CA_PK=$(cd crypto-config/peerOrganizations/garyton-university.dl4csr.org/ca && ls *_sk)
 
 print_step "Start network"
-docker-compose up -d
+docker-compose -f docker-compose-zookeeper.yaml up -d
+docker-compose -f docker-compose-kafka.yaml up -d
+docker-compose -f docker-compose-orderer.yaml up -d
+docker-compose -f docker-compose-couchdb.yaml up -d
+docker-compose -f docker-compose-peer.yaml up -d
+docker-compose -f docker-compose-cli.yaml up -d
 echo "Sleep 10 seconds for kafka cluster to complete booting..."
 sleep 10
 
 print_step "Create and join channels"
 docker exec cli.clayton-university.dl4csr.org peer channel create \
-  -o orderer.dl4csr.org:7050 \
+  -o orderer1.dl4csr.org:7050 \
   -c claytonuniversitychannel \
-  -f /etc/hyperledger/config/claytonuniversitychannel.tx \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  -f /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/claytonuniversitychannel.tx \
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 docker exec cli.garyton-university.dl4csr.org peer channel create \
-  -o orderer.dl4csr.org:7050 \
+  -o orderer1.dl4csr.org:7050 \
   -c garytonuniversitychannel \
-  -f /etc/hyperledger/config/garytonuniversitychannel.tx \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  -f /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/garytonuniversitychannel.tx \
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+
 docker exec cli.clayton-university.dl4csr.org peer channel join \
   -b claytonuniversitychannel.block \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 docker exec cli.garyton-university.dl4csr.org peer channel join \
   -b garytonuniversitychannel.block \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 
 print_step "Install and instantiate chaincode"
 docker exec cli.clayton-university.dl4csr.org peer chaincode install \
@@ -77,31 +83,31 @@ docker exec cli.clayton-university.dl4csr.org peer chaincode install \
   -v 1.0.0 \
   -l golang \
   -p chaincode \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 docker exec cli.garyton-university.dl4csr.org peer chaincode install \
   -n dl4csr \
   -v 1.0.0 \
   -l golang \
   -p chaincode \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 docker exec cli.clayton-university.dl4csr.org peer chaincode instantiate \
-  -o orderer.dl4csr.org:7050 \
+  -o orderer1.dl4csr.org:7050 \
   -C claytonuniversitychannel \
   -n dl4csr \
   -l golang \
   -v 1.0.0 \
   -c '{"Args":["init"]}' \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 echo "Sleep 5 seconds for chaincode to complete instantiating..."
 sleep 5
 docker exec cli.garyton-university.dl4csr.org peer chaincode instantiate \
-  -o orderer.dl4csr.org:7050 \
+  -o orderer1.dl4csr.org:7050 \
   -C garytonuniversitychannel \
   -n dl4csr \
   -l golang \
   -v 1.0.0 \
   -c '{"Args":["init"]}' \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 echo "Sleep 5 seconds for chaincode to complete instantiating..."
 sleep 5
 
@@ -110,9 +116,9 @@ docker exec cli.clayton-university.dl4csr.org peer chaincode invoke \
   -C claytonuniversitychannel \
   -n dl4csr \
   -c '{"Args":["test"]}' \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 docker exec cli.garyton-university.dl4csr.org peer chaincode invoke \
   -C garytonuniversitychannel \
   -n dl4csr \
   -c '{"Args":["test"]}' \
-  --tls --cafile /etc/hyperledger/orderer/tlsca/ca.pem
+  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem

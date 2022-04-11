@@ -2,7 +2,9 @@ OrdererOrgs:
   - Name: Orderer
     Domain: dl4csr.org
     Specs:
-      - Hostname: orderer
+      - Hostname: orderer1
+      - Hostname: orderer2
+      - Hostname: orderer3
 
 PeerOrgs:
   - Name: ClaytonUniversity
