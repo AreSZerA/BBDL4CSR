@@ -1,5 +1,7 @@
 package lib
 
+import "strconv"
+
 type Paper struct {
 	ID          string    `json:"id"`       // CompositeKey(Uploader + UploadTime)
 	Uploader    string    `json:"uploader"` // User composite key
@@ -15,4 +17,8 @@ type Paper struct {
 
 func (p Paper) ObjectType() string {
 	return ObjectTypePaper
+}
+
+func (p Paper) Keys() []string {
+	return []string{p.Uploader + strconv.FormatInt(p.UploadTime, 10)}
 }

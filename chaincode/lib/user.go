@@ -12,3 +12,7 @@ type User struct {
 func (u User) ObjectType() string {
 	return ObjectTypeUser
 }
+
+func (u User) Keys() []string {
+	return []string{u.Email}
+}

@@ -14,7 +14,8 @@ func (s Status) String() string {
 }
 
 type BlockchainObject interface {
-	ObjectType() string
+	Type() string
+	Keys() []string
 }
 
 const (

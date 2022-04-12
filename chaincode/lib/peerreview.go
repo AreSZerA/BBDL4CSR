@@ -12,3 +12,7 @@ type PeerReview struct {
 func (p PeerReview) ObjectType() string {
 	return ObjectTypePeerReview
 }
+
+func (p PeerReview) Keys() []string {
+	return []string{p.Paper, p.Reviewer}
+}
