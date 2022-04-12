@@ -1,0 +1,89 @@
+version: '2'
+
+services:
+
+  zookeeper-base:
+    image: hyperledger/fabric-zookeeper:0.4
+    restart: always
+    environment:
+      - GODEBUG=netdns=go
+      - ZOO_SERVERS=server.1=zookeeper1.dl4csr.org:2888:3888 server.2=zookeeper2.dl4csr.org:2888:3888 server.3=zookeeper3.dl4csr.org:2888:3888
+
+  kafka-base:
+    image: hyperledger/fabric-kafka:0.4
+    restart: always
+    environment:
+      - GODEBUG=netdns=go
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1.dl4csr.org:2181,zookeeper2.dl4csr.org:2181,zookeeper3.dl4csr.org:2181
+
+  orderer-base:
+    image: hyperledger/fabric-orderer:1.4
+    environment:
+      - FABRIC_LOGGING_SPEC=info
+      - GODEBUG=netdns=go
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_KAFKA_RETRY_LONGINTERVAL=10s
+      - ORDERER_KAFKA_RETRY_LONGTOTAL=100s
+      - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+      - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+      - ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+      - ORDERER_KAFKA_VERBOSE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+
+  couchdb-base:
+    image: hyperledger/fabric-couchdb:0.4
+    environment:
+      - GODEBUG=netdns=go
+
+  peer-base:
+    image: hyperledger/fabric-peer:1.4
+    environment:
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=deploy_dl4csr
+      - GODEBUG=netdns=go
+    volumes:
+      - /var/run/:/host/var/run/
+
+  cli-base:
+    image: hyperledger/fabric-tools:1.4
+    tty: true
+    stdin_open: true
+    environment:
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=info
+      - GOPATH=/opt/gopath
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./../chaincode:/opt/gopath/src/chaincode/
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/

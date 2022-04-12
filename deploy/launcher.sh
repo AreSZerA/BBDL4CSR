@@ -44,7 +44,7 @@ function deploy() {
   sudo rm -rf ./crypto-config
   mkdir -p ./channel-artifacts
   mkdir -p ./crypto-config
-  docker-compose -f docker-compose-cli.yaml down --remove-orphans
+  docker-compose down --remove-orphans
   docker system prune --volumes -f
 
   print_step "Generates certifications, genesis block, and channel configuration transactions"
@@ -67,12 +67,7 @@ function deploy() {
   export GARYTON_UNIVERSITY_CA_PK
 
   print_step "Start network"
-  docker-compose -f docker-compose-zookeeper.yaml up -d
-  docker-compose -f docker-compose-kafka.yaml up -d
-  docker-compose -f docker-compose-orderer.yaml up -d
-  docker-compose -f docker-compose-couchdb.yaml up -d
-  docker-compose -f docker-compose-peer.yaml up -d
-  docker-compose -f docker-compose-cli.yaml up -d
+  docker-compose up -d
   echo "Sleep 10 seconds for kafka cluster to complete booting..."
   sleep 10
 
@@ -115,7 +110,7 @@ function deploy() {
     -v 1.0.0 \
     -c '{"Args":["init"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
-  echo "Sleep 5 seconds for chaincode to complete instantiating..."
+  echo "Sleep 5 seconds for chaincode to complete instantiation..."
   sleep 5
   docker exec cli.garyton-university.dl4csr.org peer chaincode instantiate \
     -o orderer1.dl4csr.org:7050 \
@@ -125,7 +120,7 @@ function deploy() {
     -v 1.0.0 \
     -c '{"Args":["init"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
-  echo "Sleep 5 seconds for chaincode to complete instantiating..."
+  echo "Sleep 5 seconds for chaincode to complete instantiation..."
   sleep 5
 
   print_step "Test chaincode invocation"
@@ -151,28 +146,18 @@ function remove() {
   echo "Removing network..."
   sudo rm -rf ./channel-artifacts
   sudo rm -rf ./crypto-config
-  docker-compose -f docker-compose-cli.yaml down --remove-orphans
+  docker-compose down --remove-orphans
   docker system prune --volumes -f
 }
 
 function start() {
   echo 'Starting network...'
-  docker-compose -f docker-compose-zookeeper.yaml start
-  docker-compose -f docker-compose-kafka.yaml start
-  docker-compose -f docker-compose-orderer.yaml start
-  docker-compose -f docker-compose-couchdb.yaml start
-  docker-compose -f docker-compose-peer.yaml start
-  docker-compose -f docker-compose-cli.yaml start
+  docker-compose start
 }
 
 function pause() {
   echo 'Pausing network...'
-  docker-compose -f docker-compose-cli.yaml stop
-  docker-compose -f docker-compose-peer.yaml stop
-  docker-compose -f docker-compose-couchdb.yaml stop
-  docker-compose -f docker-compose-orderer.yaml stop
-  docker-compose -f docker-compose-kafka.yaml stop
-  docker-compose -f docker-compose-zookeeper.yaml stop
+  docker-compose stop
 }
 
 case $1 in

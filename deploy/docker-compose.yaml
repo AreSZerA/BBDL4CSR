@@ -1,0 +1,358 @@
+version: '2'
+
+networks:
+  dl4csr:
+
+services:
+
+  zookeeper1.dl4csr.org:
+    container_name: zookeeper1.dl4csr.org
+    hostname: zookeeper1.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: zookeeper-base
+    environment:
+      - ZOO_MY_ID=1
+    ports:
+      - "12181:2181"
+      - "12888:2888"
+      - "13888:3888"
+    networks:
+      - dl4csr
+
+  zookeeper2.dl4csr.org:
+    container_name: zookeeper2.dl4csr.org
+    hostname: zookeeper2.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: zookeeper-base
+    environment:
+      - ZOO_MY_ID=2
+    ports:
+      - "22181:2181"
+      - "22888:2888"
+      - "23888:3888"
+    networks:
+      - dl4csr
+
+  zookeeper3.dl4csr.org:
+    container_name: zookeeper3.dl4csr.org
+    hostname: zookeeper3.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: zookeeper-base
+    environment:
+      - ZOO_MY_ID=3
+    ports:
+      - "32181:2181"
+      - "32888:2888"
+      - "33888:3888"
+    networks:
+      - dl4csr
+
+  kafka1.dl4csr.org:
+    container_name: kafka1.dl4csr.org
+    hostname: kafka1.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: kafka-base
+    environment:
+      - KAFKA_BROKER_ID=1
+    ports:
+      - "19092:9092"
+    depends_on:
+      - zookeeper1.dl4csr.org
+      - zookeeper2.dl4csr.org
+      - zookeeper3.dl4csr.org
+    networks:
+      - dl4csr
+
+  kafka2.dl4csr.org:
+    container_name: kafka2.dl4csr.org
+    hostname: kafka2.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: kafka-base
+    environment:
+      - KAFKA_BROKER_ID=2
+    ports:
+      - "29092:9092"
+    depends_on:
+      - zookeeper1.dl4csr.org
+      - zookeeper2.dl4csr.org
+      - zookeeper3.dl4csr.org
+    networks:
+      - dl4csr
+
+  kafka3.dl4csr.org:
+    container_name: kafka3.dl4csr.org
+    hostname: kafka3.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: kafka-base
+    environment:
+      - KAFKA_BROKER_ID=3
+    ports:
+      - "39092:9092"
+    depends_on:
+      - zookeeper1.dl4csr.org
+      - zookeeper2.dl4csr.org
+      - zookeeper3.dl4csr.org
+    networks:
+      - dl4csr
+
+  kafka4.dl4csr.org:
+    container_name: kafka4.dl4csr.org
+    hostname: kafka4.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: kafka-base
+    environment:
+      - KAFKA_BROKER_ID=4
+    ports:
+      - "49092:9092"
+    depends_on:
+      - zookeeper1.dl4csr.org
+      - zookeeper2.dl4csr.org
+      - zookeeper3.dl4csr.org
+    networks:
+      - dl4csr
+
+  orderer1.dl4csr.org:
+    container_name: orderer1.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: orderer-base
+    volumes:
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/tls:/var/hyperledger/orderer/tls
+    ports:
+      - "17050:7050"
+    depends_on:
+      - kafka1.dl4csr.org
+      - kafka2.dl4csr.org
+      - kafka3.dl4csr.org
+      - kafka4.dl4csr.org
+    networks:
+      - dl4csr
+
+  orderer2.dl4csr.org:
+    container_name: orderer2.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: orderer-base
+    volumes:
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer2.dl4csr.org/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer2.dl4csr.org/tls:/var/hyperledger/orderer/tls
+    ports:
+      - "27050:7050"
+    depends_on:
+      - kafka1.dl4csr.org
+      - kafka2.dl4csr.org
+      - kafka3.dl4csr.org
+      - kafka4.dl4csr.org
+    networks:
+      - dl4csr
+
+  orderer3.dl4csr.org:
+    container_name: orderer3.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: orderer-base
+    volumes:
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer3.dl4csr.org/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/dl4csr.org/orderers/orderer3.dl4csr.org/tls:/var/hyperledger/orderer/tls
+    ports:
+      - "37050:7050"
+    depends_on:
+      - kafka1.dl4csr.org
+      - kafka2.dl4csr.org
+      - kafka3.dl4csr.org
+      - kafka4.dl4csr.org
+    networks:
+      - dl4csr
+
+  couchdb.clayton-university.dl4csr.org:
+    container_name: couchdb.clayton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: couchdb-base
+    environment:
+      - COUCHDB_PASSWORD=clayton-university.dl4csr.org
+      - COUCHDB_USER=ClaytonUniversity
+    ports:
+      - "15984:5984"
+    networks:
+      - dl4csr
+
+  couchdb.garyton-university.dl4csr.org:
+    container_name: couchdb.garyton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: couchdb-base
+    environment:
+      - COUCHDB_PASSWORD=garyton-university.dl4csr.org
+      - COUCHDB_USER=GarytonUniversity
+    ports:
+      - "25984:5984"
+    networks:
+      - dl4csr
+
+  peer0.clayton-university.dl4csr.org:
+    container_name: peer0.clayton-university.dl4csr.org
+    hostname: peer0.clayton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.clayton-university.dl4csr.org:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=clayton-university.dl4csr.org
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=ClaytonUniversity
+      - CORE_PEER_ADDRESS=peer0.clayton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.clayton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.clayton-university.dl4csr.org:7051
+      - CORE_PEER_ID=peer0.clayton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=ClaytonUniversityMSP
+    volumes:
+      - ./crypto-config/peerOrganizations/clayton-university.dl4csr.org/peers/peer0.clayton-university.dl4csr.org/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/clayton-university.dl4csr.org/peers/peer0.clayton-university.dl4csr.org/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "17051:7051"
+      - "17052:7052"
+      - "17053:7053"
+    depends_on:
+      - orderer1.dl4csr.org
+      - orderer2.dl4csr.org
+      - orderer3.dl4csr.org
+      - couchdb.clayton-university.dl4csr.org
+    networks:
+      - dl4csr
+
+  peer0.garyton-university.dl4csr.org:
+    container_name: peer0.garyton-university.dl4csr.org
+    hostname: peer0.garyton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.garyton-university.dl4csr.org:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=garyton-university.dl4csr.org
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=GarytonUniversity
+      - CORE_PEER_ADDRESS=peer0.garyton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.garyton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.garyton-university.dl4csr.org:7051
+      - CORE_PEER_ID=peer0.garyton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=GarytonUniversityMSP
+    volumes:
+      - ./crypto-config/peerOrganizations/garyton-university.dl4csr.org/peers/peer0.garyton-university.dl4csr.org/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/garyton-university.dl4csr.org/peers/peer0.garyton-university.dl4csr.org/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "27051:7051"
+      - "27052:7052"
+      - "27053:7053"
+    depends_on:
+      - orderer1.dl4csr.org
+      - orderer2.dl4csr.org
+      - orderer3.dl4csr.org
+      - couchdb.garyton-university.dl4csr.org
+    networks:
+      - dl4csr
+
+  peer1.clayton-university.dl4csr.org:
+    container_name: peer1.clayton-university.dl4csr.org
+    hostname: peer1.clayton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.clayton-university.dl4csr.org:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=clayton-university.dl4csr.org
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=ClaytonUniversity
+      - CORE_PEER_ADDRESS=peer1.clayton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.clayton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.clayton-university.dl4csr.org:7051
+      - CORE_PEER_ID=peer1.clayton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=ClaytonUniversityMSP
+    volumes:
+      - ./crypto-config/peerOrganizations/clayton-university.dl4csr.org/peers/peer1.clayton-university.dl4csr.org/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/clayton-university.dl4csr.org/peers/peer1.clayton-university.dl4csr.org/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "37051:7051"
+      - "37052:7052"
+      - "37053:7053"
+    depends_on:
+      - orderer1.dl4csr.org
+      - orderer2.dl4csr.org
+      - orderer3.dl4csr.org
+      - couchdb.clayton-university.dl4csr.org
+    networks:
+      - dl4csr
+
+  peer1.garyton-university.dl4csr.org:
+    container_name: peer1.garyton-university.dl4csr.org
+    hostname: peer1.garyton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    environment:
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.garyton-university.dl4csr.org:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=garyton-university.dl4csr.org
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=GarytonUniversity
+      - CORE_PEER_ADDRESS=peer1.garyton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.garyton-university.dl4csr.org:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.garyton-university.dl4csr.org:7051
+      - CORE_PEER_ID=peer1.garyton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=GarytonUniversityMSP
+      - GODEBUG=netdns=go
+    volumes:
+      - ./crypto-config/peerOrganizations/garyton-university.dl4csr.org/peers/peer1.garyton-university.dl4csr.org/msp:/etc/hyperledger/fabric/msp
+      - ./crypto-config/peerOrganizations/garyton-university.dl4csr.org/peers/peer1.garyton-university.dl4csr.org/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - "47051:7051"
+      - "47052:7052"
+      - "47053:7053"
+    depends_on:
+      - orderer1.dl4csr.org
+      - orderer2.dl4csr.org
+      - orderer3.dl4csr.org
+      - couchdb.garyton-university.dl4csr.org
+    networks:
+      - dl4csr
+
+  cli.clayton-university.dl4csr.org:
+    container_name: cli.clayton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: cli-base
+    environment:
+      - CORE_PEER_ADDRESS=peer0.clayton-university.dl4csr.org:7051
+      - CORE_PEER_ID=cli.clayton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=ClaytonUniversityMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/clayton-university.dl4csr.org/users/Admin@clayton-university.dl4csr.org/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/clayton-university.dl4csr.org/peers/peer0.clayton-university.dl4csr.org/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/clayton-university.dl4csr.org/peers/peer0.clayton-university.dl4csr.org/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/clayton-university.dl4csr.org/peers/peer0.clayton-university.dl4csr.org/tls/ca.crt
+    depends_on:
+      - peer0.clayton-university.dl4csr.org
+      - peer1.clayton-university.dl4csr.org
+    networks:
+      - dl4csr
+
+  cli.garyton-university.dl4csr.org:
+    container_name: cli.garyton-university.dl4csr.org
+    extends:
+      file: docker-compose-base.yaml
+      service: cli-base
+    environment:
+      - CORE_PEER_ADDRESS=peer1.garyton-university.dl4csr.org:7051
+      - CORE_PEER_ID=cli.garyton-university.dl4csr.org
+      - CORE_PEER_LOCALMSPID=GarytonUniversityMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/garyton-university.dl4csr.org/users/Admin@garyton-university.dl4csr.org/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/garyton-university.dl4csr.org/peers/peer1.garyton-university.dl4csr.org/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/garyton-university.dl4csr.org/peers/peer1.garyton-university.dl4csr.org/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/garyton-university.dl4csr.org/peers/peer1.garyton-university.dl4csr.org/tls/ca.crt
+    depends_on:
+      - peer0.garyton-university.dl4csr.org
+      - peer1.garyton-university.dl4csr.org
+    networks:
+      - dl4csr
