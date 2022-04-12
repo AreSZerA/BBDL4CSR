@@ -10,15 +10,18 @@ import (
 	"strconv"
 )
 
-func CreateUser(stub shim.ChaincodeStubInterface, args ...string) peer.Response {
+func CreateUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 3 {
 		return shim.Error("function CreateUser requires 3 arguments")
+	}
+	if args[0] == "" || args[1] == "" || args[2] == "" {
+		return shim.Error("arguments should be nonempty")
 	}
 	email := args[0]
 	name := args[1]
 	passwd := args[2]
 	user := lib.User{Email: email, Name: name, Passwd: passwd}
-	resp := RetrieveUserByEmail(stub, email)
+	resp := RetrieveUserByEmail(stub, []string{email})
 	if resp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to check data uniqueness: %s", resp.Message))
 	}
@@ -32,8 +35,8 @@ func CreateUser(stub shim.ChaincodeStubInterface, args ...string) peer.Response 
 	return shim.Success(payload)
 }
 
-func updateUserField(stub shim.ChaincodeStubInterface, email string, field field, newVal interface{}) peer.Response {
-	resp := RetrieveUserByEmail(stub, email)
+func updateUserField(stub shim.ChaincodeStubInterface, email string, field field, newVal string) peer.Response {
+	resp := RetrieveUserByEmail(stub, []string{email})
 	if resp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to check email %s: %s", email, resp.Message))
 	}
@@ -47,33 +50,13 @@ func updateUserField(stub shim.ChaincodeStubInterface, email string, field field
 	}
 	switch field {
 	case fieldUserName:
-		switch newVal.(type) {
-		case string:
-			user.Name = fmt.Sprintf("%s", newVal)
-		default:
-			return shim.Error("invalid value type: type must be string")
-		}
+		user.Name = newVal
 	case fieldUserPasswd:
-		switch newVal.(type) {
-		case string:
-			user.Passwd = fmt.Sprintf("%s", newVal)
-		default:
-			return shim.Error("invalid value type: type must be string")
-		}
+		user.Passwd = newVal
 	case fieldUserIsReviewer:
-		switch newVal.(type) {
-		case bool:
-			user.IsReviewer, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
-		default:
-			return shim.Error("invalid value type: type must be bool")
-		}
+		user.IsReviewer, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
 	case fieldUserIsAdmin:
-		switch newVal.(type) {
-		case bool:
-			user.IsAdmin, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
-		default:
-			return shim.Error("invalid value type: type must be bool")
-		}
+		user.IsAdmin, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
 	default:
 		return shim.Error("invalid field type")
 	}
@@ -84,23 +67,62 @@ func updateUserField(stub shim.ChaincodeStubInterface, email string, field field
 	return shim.Success(payload)
 }
 
-func UpdateUserName(stub shim.ChaincodeStubInterface, email string, newName string) peer.Response {
+func UpdateUserName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 2 {
+		return shim.Error("function UpdateUserName requires 2 arguments")
+	}
+	if args[0] == "" || args[1] == "" {
+		return shim.Error("arguments should be nonempty")
+	}
+	email := args[0]
+	newName := args[1]
 	return updateUserField(stub, email, fieldUserName, newName)
 }
 
-func UpdateUserPasswd(stub shim.ChaincodeStubInterface, email string, newPasswd string) peer.Response {
+func UpdateUserPasswd(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 2 {
+		return shim.Error("function UpdateUserPasswd requires 2 arguments")
+	}
+	if args[0] == "" || args[1] == "" {
+		return shim.Error("arguments should be nonempty")
+	}
+	email := args[0]
+	newPasswd := args[1]
 	return updateUserField(stub, email, fieldUserPasswd, newPasswd)
 }
 
-func UpdateUserIsReviewer(stub shim.ChaincodeStubInterface, email string, isReviewer bool) peer.Response {
+func UpdateUserIsReviewer(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 2 {
+		return shim.Error("function UpdateUserIsReviewer requires 2 arguments")
+	}
+	if args[0] == "" || args[1] == "" {
+		return shim.Error("arguments should be nonempty")
+	}
+	email := args[0]
+	isReviewer := args[1]
 	return updateUserField(stub, email, fieldUserIsReviewer, isReviewer)
 }
 
-func UpdateUserIsAdmin(stub shim.ChaincodeStubInterface, email string, isAdmin bool) peer.Response {
+func UpdateUserIsAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 2 {
+		return shim.Error("function UpdateUserIsAdmin requires 2 arguments")
+	}
+	if args[0] == "" || args[1] == "" {
+		return shim.Error("arguments should be nonempty")
+	}
+	email := args[0]
+	isAdmin := args[1]
 	return updateUserField(stub, email, fieldUserIsAdmin, isAdmin)
 }
 
-func RetrieveUserByKey(stub shim.ChaincodeStubInterface, key string) peer.Response {
+func RetrieveUserByKey(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 1 {
+		return shim.Error("function RetrieveUserByKey requires 1 arguments")
+	}
+	if args[0] == "" {
+		return shim.Error("argument should be nonempty")
+	}
+	key := args[0]
 	payload, err := util.GetByKey(stub, key)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve user by %s: %s", key, err.Error()))
@@ -108,7 +130,14 @@ func RetrieveUserByKey(stub shim.ChaincodeStubInterface, key string) peer.Respon
 	return shim.Success(payload)
 }
 
-func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, email string) peer.Response {
+func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 1 {
+		return shim.Error("function RetrieveUserByEmail requires 1 arguments")
+	}
+	if args[0] == "" {
+		return shim.Error("argument should be nonempty")
+	}
+	email := args[0]
 	payload, err := util.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve user by %s: %s", email, err.Error()))
