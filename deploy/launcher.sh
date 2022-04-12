@@ -8,7 +8,8 @@ The options are:
   -d, --deploy    Deploy or redeploy the network, blockchain will be wiped then recreated
   -r, --remove    Remove the network, volumes will be deleted and data will be wiped
   -s, --start     Start the existing network, the blockchain will be restored
-  -p, --pause     Stop the existing network, the blockchain still exists in containers'
+  -p, --pause     Stop the existing network, the blockchain still exists in containers
+  -i, --invoke    Function invocation test of the chaincode'
 }
 
 function deploy() {
@@ -160,6 +161,19 @@ function pause() {
   docker-compose stop
 }
 
+function invoke() {
+  echo 'Testing chaincode invocation...'
+  if [ "$2" == "" ]; then
+    echo "Usage: launcher.sh $1 [FUNCTION] [ARGUMENTS]"
+    exit 0
+  fi
+  docker exec cli.clayton-university.dl4csr.org peer chaincode invoke \
+    -C claytonuniversitychannel \
+    -n dl4csr \
+    -c '{"Args":['"$2"']}' \
+    --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+}
+
 case $1 in
 "-h" | "--help" | "")
   show_helps
@@ -175,6 +189,20 @@ case $1 in
   ;;
 "-p" | "--pause")
   pause
+  ;;
+"-i" | "--invoke")
+  builder=""
+  index=1
+  for arg in "$@"; do
+    if [ "$index" != 1 ]; then
+      builder=$builder"\"$arg\""
+      if [ "$index" -lt $# ]; then
+        builder=$builder","
+      fi
+    fi
+    ((index = "$index" + 1))
+  done
+  invoke "$1" "$builder"
   ;;
 *)
   echo "Unknown flag: $1"
