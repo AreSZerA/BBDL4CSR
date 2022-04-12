@@ -10,8 +10,11 @@ import (
 	"strconv"
 )
 
-func CreateUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 3 {
+func createUserBase(stub shim.ChaincodeStubInterface, isReviewer bool, args []string) peer.Response {
+	if len(args) < 3 {
+		if isReviewer {
+			return shim.Error("function CreateReviewer requires 3 arguments")
+		}
 		return shim.Error("function CreateUser requires 3 arguments")
 	}
 	if args[0] == "" || args[1] == "" || args[2] == "" {
@@ -20,7 +23,7 @@ func CreateUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	email := args[0]
 	name := args[1]
 	passwd := args[2]
-	user := lib.User{Email: email, Name: name, Passwd: passwd}
+	user := lib.User{Email: email, Name: name, Passwd: passwd, IsReviewer: isReviewer}
 	resp := RetrieveUserByEmail(stub, []string{email})
 	if resp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to check data uniqueness: %s", resp.Message))
@@ -35,7 +38,15 @@ func CreateUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	return shim.Success(payload)
 }
 
-func updateUserField(stub shim.ChaincodeStubInterface, email string, field field, newVal string) peer.Response {
+func CreateUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	return createUserBase(stub, false, args)
+}
+
+func CreateReviewer(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	return createUserBase(stub, true, args)
+}
+
+func updateUserBase(stub shim.ChaincodeStubInterface, email string, field field, newVal string) peer.Response {
 	resp := RetrieveUserByEmail(stub, []string{email})
 	if resp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to check email %s: %s", email, resp.Message))
@@ -68,7 +79,7 @@ func updateUserField(stub shim.ChaincodeStubInterface, email string, field field
 }
 
 func UpdateUserName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 2 {
+	if len(args) < 2 {
 		return shim.Error("function UpdateUserName requires 2 arguments")
 	}
 	if args[0] == "" || args[1] == "" {
@@ -76,11 +87,11 @@ func UpdateUserName(stub shim.ChaincodeStubInterface, args []string) peer.Respon
 	}
 	email := args[0]
 	newName := args[1]
-	return updateUserField(stub, email, fieldUserName, newName)
+	return updateUserBase(stub, email, fieldUserName, newName)
 }
 
 func UpdateUserPasswd(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 2 {
+	if len(args) < 2 {
 		return shim.Error("function UpdateUserPasswd requires 2 arguments")
 	}
 	if args[0] == "" || args[1] == "" {
@@ -88,11 +99,11 @@ func UpdateUserPasswd(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 	}
 	email := args[0]
 	newPasswd := args[1]
-	return updateUserField(stub, email, fieldUserPasswd, newPasswd)
+	return updateUserBase(stub, email, fieldUserPasswd, newPasswd)
 }
 
 func UpdateUserIsReviewer(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 2 {
+	if len(args) < 2 {
 		return shim.Error("function UpdateUserIsReviewer requires 2 arguments")
 	}
 	if args[0] == "" || args[1] == "" {
@@ -100,11 +111,11 @@ func UpdateUserIsReviewer(stub shim.ChaincodeStubInterface, args []string) peer.
 	}
 	email := args[0]
 	isReviewer := args[1]
-	return updateUserField(stub, email, fieldUserIsReviewer, isReviewer)
+	return updateUserBase(stub, email, fieldUserIsReviewer, isReviewer)
 }
 
 func UpdateUserIsAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 2 {
+	if len(args) < 2 {
 		return shim.Error("function UpdateUserIsAdmin requires 2 arguments")
 	}
 	if args[0] == "" || args[1] == "" {
@@ -112,11 +123,11 @@ func UpdateUserIsAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	}
 	email := args[0]
 	isAdmin := args[1]
-	return updateUserField(stub, email, fieldUserIsAdmin, isAdmin)
+	return updateUserBase(stub, email, fieldUserIsAdmin, isAdmin)
 }
 
 func RetrieveUserByKey(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 1 {
+	if len(args) < 1 {
 		return shim.Error("function RetrieveUserByKey requires 1 arguments")
 	}
 	if args[0] == "" {
@@ -131,7 +142,7 @@ func RetrieveUserByKey(stub shim.ChaincodeStubInterface, args []string) peer.Res
 }
 
 func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 1 {
+	if len(args) < 1 {
 		return shim.Error("function RetrieveUserByEmail requires 1 arguments")
 	}
 	if args[0] == "" {
@@ -145,7 +156,7 @@ func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.R
 	return shim.Success(payload)
 }
 
-func RetrieveAllUsers(stub shim.ChaincodeStubInterface) peer.Response {
+func RetrieveAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var users []lib.User
 	results, err := util.GetAll(stub, lib.ObjectTypeUser)
 	if err != nil {
@@ -166,7 +177,7 @@ func RetrieveAllUsers(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success(usersBytes)
 }
 
-func RetrieveAllReviewers(stub shim.ChaincodeStubInterface) peer.Response {
+func RetrieveAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var users []lib.User
 	results, err := util.GetByQuery(stub, `{"selector":{"is_reviewer":true}}`)
 	if err != nil {
