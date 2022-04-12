@@ -3,7 +3,6 @@ package lib
 import "strconv"
 
 type Paper struct {
-	ID          string    `json:"id"`       // CompositeKey(Uploader + UploadTime)
 	Uploader    string    `json:"uploader"` // User composite key
 	UploadTime  int64     `json:"upload_time"`
 	Title       string    `json:"title"`
@@ -15,7 +14,7 @@ type Paper struct {
 	ReviewTime  int64     `json:"review_time"`
 }
 
-func (p Paper) ObjectType() string {
+func (p Paper) Type() string {
 	return ObjectTypePaper
 }
 

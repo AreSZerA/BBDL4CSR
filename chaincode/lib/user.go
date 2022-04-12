@@ -1,7 +1,6 @@
 package lib
 
 type User struct {
-	ID         string `json:"id"` // CompositeKey(Email)
 	Email      string `json:"email"`
 	Name       string `json:"name"`
 	Passwd     string `json:"passwd"`
@@ -9,7 +8,7 @@ type User struct {
 	IsReviewer bool   `json:"is_reviewer"`
 }
 
-func (u User) ObjectType() string {
+func (u User) Type() string {
 	return ObjectTypeUser
 }
 
