@@ -13,6 +13,10 @@ func (s Status) String() string {
 	}
 }
 
+type BlockchainObject interface {
+	ObjectType() string
+}
+
 const (
 	StatusCodeReviewing Status = 1
 	StatusCodeRejected  Status = 2
