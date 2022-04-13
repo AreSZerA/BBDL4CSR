@@ -226,6 +226,27 @@ func RetrieveAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Res
 	return shim.Success(usersBytes)
 }
 
+func retrieveAllSortedReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+	var users []lib.User
+	results, err := util.GetByQuery(stub, `{"selector":{"is_reviewer":true},"sort":[{"reviewing":"asc"}]}`)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to retrieve users: %s", err.Error()))
+	}
+	for _, userBytes := range results {
+		var user lib.User
+		err = json.Unmarshal(userBytes, &user)
+		if err != nil {
+			return shim.Error(fmt.Sprintf("failed to unserialise user: %s", err.Error()))
+		}
+		users = append(users, user)
+	}
+	usersBytes, err := json.Marshal(users)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to serialise users: %s", err.Error()))
+	}
+	return shim.Success(usersBytes)
+}
+
 func RetrieveCountAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	results, err := util.GetAll(stub, lib.ObjectTypeUser)
 	if err != nil {
@@ -235,7 +256,7 @@ func RetrieveCountAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Re
 }
 
 func RetrieveCountAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"selector":"{"is_reviewer":true}"}`
+	query := `{"selector":{"is_reviewer":true}}`
 	results, err := util.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrive ledger: %s", err.Error()))

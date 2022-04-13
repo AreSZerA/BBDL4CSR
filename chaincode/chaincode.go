@@ -24,6 +24,7 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveAllReviewers":      route.RetrieveAllReviewers,
 	"RetrieveCountAllUsers":     route.RetrieveCountAllUsers,
 	"RetrieveCountAllReviewers": route.RetrieveCountAllReviewers,
+	"CreatePaper":               route.CreatePaper,
 }
 
 var funcNames = []string{
@@ -40,6 +41,7 @@ var funcNames = []string{
 	"RetrieveAllReviewers",
 	"RetrieveCountAllUsers",
 	"RetrieveCountAllReviewers",
+	"CreatePaper",
 }
 
 type DigitalLibrary struct {
