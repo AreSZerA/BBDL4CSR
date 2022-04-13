@@ -40,14 +40,6 @@ func GetAll(stub shim.ChaincodeStubInterface, objectType string, keys ...string)
 	return results, nil
 }
 
-func GetByKey(stub shim.ChaincodeStubInterface, key string) ([]byte, error) {
-	result, err := stub.GetState(key)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get from ledger: %s", err.Error())
-	}
-	return result, nil
-}
-
 func GetByKeys(stub shim.ChaincodeStubInterface, objectType string, keys ...string) ([]byte, error) {
 	key, err := stub.CreateCompositeKey(objectType, keys)
 	if err != nil {

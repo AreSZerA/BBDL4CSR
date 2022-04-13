@@ -154,21 +154,6 @@ func updateUserReviewingSub(stub shim.ChaincodeStubInterface, args []string) pee
 	return updateUserBase(stub, email, fieldUserReviewing, "-")
 }
 
-func RetrieveUserByKey(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) < 1 {
-		return shim.Error("function RetrieveUserByKey requires 1 arguments")
-	}
-	if args[0] == "" {
-		return shim.Error("argument should be nonempty")
-	}
-	key := args[0]
-	payload, err := util.GetByKey(stub, key)
-	if err != nil {
-		return shim.Error(fmt.Sprintf("failed to retrieve user by %s: %s", key, err.Error()))
-	}
-	return shim.Success(payload)
-}
-
 func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) < 1 {
 		return shim.Error("function RetrieveUserByEmail requires 1 arguments")
