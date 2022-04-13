@@ -9,8 +9,8 @@ import (
 )
 
 var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
-	"test": func(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-		return shim.Success([]byte(fmt.Sprintf("Chaincode invocation test passed, args: %s", args)))
+	"ping": func(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+		return shim.Success([]byte("pong"))
 	},
 	"CreateUser":                route.CreateUser,
 	"CreateReviewer":            route.CreateReviewer,

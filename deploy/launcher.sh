@@ -128,12 +128,12 @@ function deploy() {
   docker exec cli.clayton-university.dl4csr.org peer chaincode invoke \
     -C claytonuniversitychannel \
     -n dl4csr \
-    -c '{"Args":["test","arg1","arg2"]}' \
+    -c '{"Args":["ping"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
   docker exec cli.garyton-university.dl4csr.org peer chaincode invoke \
     -C garytonuniversitychannel \
     -n dl4csr \
-    -c '{"Args":["test","arg1","arg2"]}' \
+    -c '{"Args":["ping"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
 }
 
