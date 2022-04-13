@@ -68,6 +68,12 @@ func updateUserBase(stub shim.ChaincodeStubInterface, email string, field field,
 		user.IsReviewer, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
 	case fieldUserIsAdmin:
 		user.IsAdmin, _ = strconv.ParseBool(fmt.Sprintf("%s", newVal))
+	case fieldUserReviewing:
+		if newVal == "+" {
+			user.Reviewing++
+		} else if newVal == "-" {
+			user.Reviewing--
+		}
 	default:
 		return shim.Error("invalid field type")
 	}
@@ -124,6 +130,28 @@ func UpdateUserIsAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	email := args[0]
 	isAdmin := args[1]
 	return updateUserBase(stub, email, fieldUserIsAdmin, isAdmin)
+}
+
+func updateUserReviewingAdd(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) < 1 {
+		shim.Error("function updateUserReviewingAdd requires 2 arguments")
+	}
+	if args[0] == "" {
+		shim.Error("argument should be nonempty")
+	}
+	email := args[0]
+	return updateUserBase(stub, email, fieldUserReviewing, "+")
+}
+
+func updateUserReviewingSub(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) < 1 {
+		shim.Error("function updateUserReviewingAdd requires 2 arguments")
+	}
+	if args[0] == "" {
+		shim.Error("argument should be nonempty")
+	}
+	email := args[0]
+	return updateUserBase(stub, email, fieldUserReviewing, "-")
 }
 
 func RetrieveUserByKey(stub shim.ChaincodeStubInterface, args []string) peer.Response {

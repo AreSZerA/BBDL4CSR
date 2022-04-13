@@ -7,4 +7,5 @@ const (
 	fieldUserPasswd
 	fieldUserIsReviewer
 	fieldUserIsAdmin
+	fieldUserReviewing
 )
