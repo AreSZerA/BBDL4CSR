@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "reviewing"
+    ]
+  },
+  "ddoc": "reviewingIndex",
+  "name": "reviewing-json-index",
+  "type": "json"
+}
