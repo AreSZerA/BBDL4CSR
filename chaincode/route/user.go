@@ -197,3 +197,20 @@ func RetrieveAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Res
 	}
 	return shim.Success(usersBytes)
 }
+
+func RetrieveCountAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+	results, err := util.GetAll(stub, lib.ObjectTypeUser)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to retrive ledger: %s", err.Error()))
+	}
+	return shim.Success([]byte(strconv.Itoa(len(results))))
+}
+
+func RetrieveCountAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+	query := `{"selector":"{"is_reviewer":true}"}`
+	results, err := util.GetByQuery(stub, query)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to retrive ledger: %s", err.Error()))
+	}
+	return shim.Success([]byte(strconv.Itoa(len(results))))
+}

@@ -12,17 +12,27 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"test": func(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		return shim.Success([]byte(fmt.Sprintf("Chaincode invocation test passed, args: %s", args)))
 	},
-	"CreateUser":           route.CreateUser,
-	"CreateReviewer":       route.CreateReviewer,
-	"UpdateUserName":       route.UpdateUserName,
-	"UpdateUserPasswd":     route.UpdateUserPasswd,
-	"UpdateUserIsReviewer": route.UpdateUserIsReviewer,
-	"UpdateUserIsAdmin":    route.UpdateUserIsAdmin,
-	"RetrieveUserByKey":    route.RetrieveUserByKey,
-	"RetrieveUserByEmail":  route.RetrieveUserByEmail,
-	"RetrieveAllUsers":     route.RetrieveAllUsers,
-	"RetrieveAllReviewers": route.RetrieveAllReviewers,
+	"CreateUser":                route.CreateUser,
+	"CreateReviewer":            route.CreateReviewer,
+	"UpdateUserName":            route.UpdateUserName,
+	"UpdateUserPasswd":          route.UpdateUserPasswd,
+	"UpdateUserIsReviewer":      route.UpdateUserIsReviewer,
+	"UpdateUserIsAdmin":         route.UpdateUserIsAdmin,
+	"RetrieveUserByKey":         route.RetrieveUserByKey,
+	"RetrieveUserByEmail":       route.RetrieveUserByEmail,
+	"RetrieveAllUsers":          route.RetrieveAllUsers,
+	"RetrieveAllReviewers":      route.RetrieveAllReviewers,
+	"RetrieveCountAllUsers":     route.RetrieveCountAllUsers,
+	"RetrieveCountAllReviewers": route.RetrieveCountAllReviewers,
 }
+
+var keys = func() []string {
+	ks := make([]string, len(funcMap))
+	for k := range funcMap {
+		ks = append(ks, k)
+	}
+	return ks
+}()
 
 type DigitalLibrary struct {
 }
@@ -37,7 +47,7 @@ func (library *DigitalLibrary) Invoke(stub shim.ChaincodeStubInterface) peer.Res
 	if ok {
 		return function(stub, args)
 	}
-	return shim.Error(fmt.Sprintf("Function not implemeted: %s", functionName))
+	return shim.Error(fmt.Sprintf("Function not implemeted: %s. Available functions: %s.", functionName, keys))
 }
 
 func main() {
