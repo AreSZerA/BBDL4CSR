@@ -6,6 +6,7 @@ type User struct {
 	Passwd     string `json:"passwd"`
 	IsAdmin    bool   `json:"is_admin"`
 	IsReviewer bool   `json:"is_reviewer"`
+	Reviewing  uint16 `json:"reviewing"`
 }
 
 func (u User) Type() string {
