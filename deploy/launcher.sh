@@ -15,7 +15,7 @@ The options are:
 }
 
 function deploy() {
-  read -r -n 1 -p 'If the network has been deployed before, data will lost, still deploy? [y/N] ' FLAG
+  read -r -n 1 -p 'Data will lost if the network has been deployed before, still deploy? [y/N] ' FLAG
   echo
   if [ "$FLAG" != "y" ]; then
     echo "Operation canceled"
@@ -49,6 +49,9 @@ function deploy() {
   mkdir -p ./crypto-config
   docker-compose down --remove-orphans
   docker system prune --volumes -f
+  for image in $images; do
+    docker rmi -f "$image"
+  done
 
   print_step "Generates certifications, genesis block, and channel configuration transactions"
   cryptogen generate --config=./crypto-config.yaml
@@ -149,6 +152,10 @@ function remove() {
   sudo rm -rf ./crypto-config
   docker-compose down --remove-orphans
   docker system prune --volumes -f
+  images=$(docker images -aq)
+  for image in $images; do
+    docker rmi -f "$image"
+  done
 }
 
 function start() {
