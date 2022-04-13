@@ -4,12 +4,14 @@ function show_helps() {
   echo 'Usage: launcher.sh [OPTION]
 
 The options are:
-  -h, --help      Show this help
-  -d, --deploy    Deploy or redeploy the network, blockchain will be wiped then recreated
-  -r, --remove    Remove the network, volumes will be deleted and data will be wiped
-  -s, --start     Start the existing network, the blockchain will be restored
-  -p, --pause     Stop the existing network, the blockchain still exists in containers
-  -i, --invoke    Function invocation test of the chaincode'
+  -h, --help       Show this help
+  -d, --deploy     Deploy or redeploy the network, blockchain will be wiped then recreated
+  -r, --remove     Remove the network, volumes will be deleted and data will be wiped
+  -s, --start      Start the existing network, the blockchain will be restored
+  -p, --pause      Stop the existing network, the blockchain still exists in containers
+  -u, --upgrade    Upgrade chaincode, use with a new version number
+  -i, --invoke     Function invocation test of the chaincode, use with function name and arguments
+'
 }
 
 function deploy() {
@@ -111,8 +113,7 @@ function deploy() {
     -v 1.0.0 \
     -c '{"Args":["init"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
-  echo "Sleep 5 seconds for chaincode to complete instantiation..."
-  sleep 5
+  echo "Chaincode for clayton-university.dl4csr.org has been instantiated"
   docker exec cli.garyton-university.dl4csr.org peer chaincode instantiate \
     -o orderer1.dl4csr.org:7050 \
     -C garytonuniversitychannel \
@@ -121,8 +122,7 @@ function deploy() {
     -v 1.0.0 \
     -c '{"Args":["init"]}' \
     --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
-  echo "Sleep 5 seconds for chaincode to complete instantiation..."
-  sleep 5
+  echo "Chaincode for clayton-university.dl4csr.org has been instantiated"
 
   print_step "Test chaincode invocation"
   docker exec cli.clayton-university.dl4csr.org peer chaincode invoke \
@@ -161,6 +161,39 @@ function pause() {
   docker-compose stop
 }
 
+function upgrade() {
+  docker exec cli.clayton-university.dl4csr.org peer chaincode install \
+    -n dl4csr \
+    -v "$1" \
+    -l golang \
+    -p chaincode \
+    --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+  docker exec cli.clayton-university.dl4csr.org peer chaincode upgrade \
+    -o orderer1.dl4csr.org:7050 \
+    -C claytonuniversitychannel \
+    -n dl4csr \
+    -l golang \
+    -v "$1" \
+    -c '{"Args":["init"]}' \
+    --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+  echo "Chaincode for clayton-university.dl4csr.org has been upgraded"
+  docker exec cli.garyton-university.dl4csr.org peer chaincode install \
+    -n dl4csr \
+    -v "$1" \
+    -l golang \
+    -p chaincode \
+    --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+  docker exec cli.garyton-university.dl4csr.org peer chaincode upgrade \
+    -o orderer1.dl4csr.org:7050 \
+    -C garytonuniversitychannel \
+    -n dl4csr \
+    -l golang \
+    -v "$1" \
+    -c '{"Args":["init"]}' \
+    --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/dl4csr.org/orderers/orderer1.dl4csr.org/msp/tlscacerts/tlsca.dl4csr.org-cert.pem
+  echo "Chaincode for garyton-university.dl4csr.org has been upgraded"
+}
+
 function invoke() {
   echo 'Testing chaincode invocation...'
   if [ "$2" == "" ]; then
@@ -189,6 +222,9 @@ case $1 in
   ;;
 "-p" | "--pause")
   pause
+  ;;
+"-u" | "--upgrade")
+  upgrade "$2"
   ;;
 "-i" | "--invoke")
   builder=""
