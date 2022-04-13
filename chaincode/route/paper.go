@@ -3,6 +3,7 @@ package route
 import (
 	"chaincode/lib"
 	"chaincode/util"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -39,10 +40,6 @@ func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 	if userResp.Payload == nil {
 		return shim.Error(fmt.Sprintf("uploader %s not exists", email))
 	}
-	userKey, err := stub.CreateCompositeKey(lib.ObjectTypeUser, []string{email})
-	if err != nil {
-		return shim.Error(fmt.Sprintf("failed to create composite key: %s", err.Error()))
-	}
 	reviewerResp := retrieveAllSortedReviewers(stub, nil)
 	if reviewerResp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to distribute reviewers: %s", reviewerResp.Message))
@@ -52,23 +49,22 @@ func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 	if len(reviewers) < 3 {
 		return shim.Error("not enough reviewers to distribute")
 	}
-	var reviewerKeys [3]string
+	var reviewerEmails [3]string
 	for i := 0; i < 3; i++ {
-		key, err := stub.CreateCompositeKey(lib.ObjectTypeUser, []string{reviewers[i].Email})
-		if err != nil {
-			return shim.Error(fmt.Sprintf("failed to create composite key: %s", err.Error()))
-		}
-		reviewerKeys[i] = key
+		reviewerEmails[i] = reviewers[i].Email
 		_ = updateUserReviewingAdd(stub, []string{reviewers[i].Email})
 	}
+	now := time.Now().UnixNano()
+	id := fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s%d", email, now))))
 	paper := lib.Paper{
-		Uploader:    userKey,
-		UploadTime:  time.Now().UnixNano(),
+		ID:          id,
+		Uploader:    email,
+		UploadTime:  now,
 		Title:       title,
 		Abstract:    abstract,
 		Authors:     authors,
 		Keywords:    keywords,
-		PeerReviews: reviewerKeys,
+		PeerReviews: reviewerEmails,
 		Status:      lib.StatusReviewing,
 	}
 	payload, err := util.PutLedger(stub, paper)

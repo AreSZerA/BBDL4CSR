@@ -1,8 +1,8 @@
 package lib
 
 type PeerReview struct {
-	Paper    string `json:"paper"`    // Paper composite key
-	Reviewer string `json:"reviewer"` // User composite key
+	Paper    string `json:"paper"`    // Paper ID
+	Reviewer string `json:"reviewer"` // User email
 	Status   string `json:"status"`
 	Comment  string `json:"comment,omitempty"`
 	Time     int64  `json:"time,omitempty"`
