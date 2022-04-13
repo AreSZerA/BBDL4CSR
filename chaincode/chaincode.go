@@ -26,13 +26,21 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveCountAllReviewers": route.RetrieveCountAllReviewers,
 }
 
-var keys = func() []string {
-	ks := make([]string, len(funcMap))
-	for k := range funcMap {
-		ks = append(ks, k)
-	}
-	return ks
-}()
+var funcNames = []string{
+	"ping",
+	"CreateUser",
+	"CreateReviewer",
+	"UpdateUserName",
+	"UpdateUserPasswd",
+	"UpdateUserIsReviewer",
+	"UpdateUserIsAdmin",
+	"RetrieveUserByKey",
+	"RetrieveUserByEmail",
+	"RetrieveAllUsers",
+	"RetrieveAllReviewers",
+	"RetrieveCountAllUsers",
+	"RetrieveCountAllReviewers",
+}
 
 type DigitalLibrary struct {
 }
@@ -42,12 +50,12 @@ func (library *DigitalLibrary) Init(_ shim.ChaincodeStubInterface) peer.Response
 }
 
 func (library *DigitalLibrary) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	functionName, args := stub.GetFunctionAndParameters()
-	function, ok := funcMap[functionName]
+	funcName, args := stub.GetFunctionAndParameters()
+	function, ok := funcMap[funcName]
 	if ok {
 		return function(stub, args)
 	}
-	return shim.Error(fmt.Sprintf("Function not implemeted: %s. Available functions: %s.", functionName, keys))
+	return shim.Error(fmt.Sprintf("Function not implemeted: %s. Available functions: %s.", funcName, funcNames))
 }
 
 func main() {
