@@ -1,0 +1,146 @@
+name: "dl4csr"
+version: 1.0.0
+
+client:
+  organization: clayton-university-dl4csr.org
+  logging:
+    level: info
+  cryptoconfig:
+    path: /home/areszera/Desktop/BBDL4CSR/deploy/crypto-config
+  credentialStore:
+    path: /tmp/dl4csr-store
+    cryptoStore:
+      path: /tmp/dl4csr-msp
+  BCCSP:
+    security:
+      enabled: true
+      default:
+        provider: "SW"
+      hashAlgorithm: "SHA2"
+      softVerify: true
+      level: 256
+  tlsCerts:
+    systemCertPool: false
+    client:
+      key:
+        path:
+      cert:
+        path:
+
+
+channels:
+  claytonuniversitychannel:
+    peers:
+      peer0.clayton-university.dl4csr.org:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+    policies:
+      queryChannelConfig:
+        minResponses: 1
+        maxTargets: 1
+        retryOpts:
+          attempts: 5
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+      discovery:
+        maxTargets: 2
+        retryOpts:
+          attempts: 4
+          initialBackoff: 500ms
+          maxBackoff: 5s
+          backoffFactor: 2.0
+      eventService:
+        resolverStrategy: PreferOrg
+        balancer: Random
+        blockHeightLagThreshold: 5
+        reconnectBlockHeightLagThreshold: 10
+        peerMonitorPeriod: 5s
+
+
+organizations:
+  clayton-university.dl4csr.org:
+    mspid: ClaytonUniversityMSP
+    cryptoPath: peerOrganizations/clayton-university.dl4csr.org/users/{userName}@clayton-university.dl4csr.org/msp
+    peers:
+      - peer0.clayton-university.dl4csr.org
+    certificateAuthorities:
+
+
+orderers:
+  orderer1.dl4csr.org:
+    url: localhost:17050
+    grpcOptions:
+      ssl-target-name-override: orderer1.dl4csr.org
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /home/areszera/Desktop/BBDL4CSR/deploy/crypto-config/ordererOrganizations/dl4csr.org/tlsca/tlsca.dl4csr.org-cert.pem
+  orderer2.dl4csr.org:
+    url: localhost:27050
+    grpcOptions:
+      ssl-target-name-override: orderer2.dl4csr.org
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /home/areszera/Desktop/BBDL4CSR/deploy/crypto-config/ordererOrganizations/dl4csr.org/tlsca/tlsca.dl4csr.org-cert.pem
+  orderer3.dl4csr.org:
+    url: localhost:37050
+    grpcOptions:
+      ssl-target-name-override: orderer3.dl4csr.org
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /home/areszera/Desktop/BBDL4CSR/deploy/crypto-config/ordererOrganizations/dl4csr.org/tlsca/tlsca.dl4csr.org-cert.pem
+
+
+peers:
+  peer0.clayton-university.dl4csr.org:
+    url: localhost:17051
+    eventUrl: localhost:17053
+    grpcOptions:
+      ssl-target-name-override: peer0.clayton-university.dl4csr.org
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      allow-insecure: false
+    tlsCACerts:
+      path: /home/areszera/Desktop/BBDL4CSR/deploy/crypto-config/peerOrganizations/clayton-university.dl4csr.org/tlsca/tlsca.clayton-university.dl4csr.org-cert.pem
+
+
+certificateAuthorities:
+
+
+entityMatchers:
+  peer:
+    - pattern: (\w*)peer0.clayton-university.dl4csr.org(\w*)
+      urlSubstitutionExp: localhost:17051
+      eventUrlSubstitutionExp: localhost:17053
+      sslTargetOverrideUrlSubstitutionExp: peer0.clayton-university.dl4csr.org
+      mappedHost: peer0.clayton-university.dl4csr.org
+  orderer:
+    - pattern: (\w*)orderer1.dl4csr.org(\w*)
+      urlSubstitutionExp: localhost:17050
+      sslTargetOverrideUrlSubstitutionExp: orderer1.dl4csr.org
+      mappedHost: orderer2.dl4csr.org
+    - pattern: (\w*)orderer2.dl4csr.org(\w*)
+      urlSubstitutionExp: localhost:27050
+      sslTargetOverrideUrlSubstitutionExp: orderer2.dl4csr.org
+      mappedHost: orderer2.dl4csr.org
+    - pattern: (\w*)orderer3.dl4csr.org(\w*)
+      urlSubstitutionExp: localhost:37050
+      sslTargetOverrideUrlSubstitutionExp: orderer3.dl4csr.org
+      mappedHost: orderer3.dl4csr.org
+  certificateAuthorities:
