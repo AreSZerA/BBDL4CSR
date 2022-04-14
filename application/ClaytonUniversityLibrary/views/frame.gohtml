@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<header>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <title>Clayton University Library</title>
+    <!-- Import remotely -->
+    <!--link href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" rel="stylesheet" type="text/css"/-->
+    <!--script rel="script" src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js" type="application/javascript"></script-->
+    <!-- Import locally -->
+    <link href="/static/mdui/css/mdui.min.css" rel="stylesheet" type="text/css">
+    <script rel="script" src="/static/mdui/js/mdui.min.js" type="application/javascript"></script>
+</header>
+
+<body class="mdui-theme-primary-red mdui-theme-accent-light-blue mdui-theme-layout-auto mdui-appbar-with-toolbar">
+
+<header class="mdui-appbar mdui-appbar-fixed mdui-color-theme-900">
+    <div class="mdui-toolbar">
+        <a class="mdui-btn mdui-btn-icon" mdui-drawer="{target:'#drawer'}">
+            <span class="mdui-icon material-icons">menu</span>
+        </a>
+        <a class="mdui-typo-title">Clayton University Library</a>
+    </div>
+</header>
+
+<div class="mdui-drawer mdui-drawer-close mdui-shadow-3" id="drawer">
+    <ul class="mdui-list">
+        <li class="mdui-list-item mdui-ripple">
+            <span class="mdui-list-item-icon mdui-icon material-icons">home</span>
+            <span class="mdui-list-item-content">Home page</span>
+        </li>
+    </ul>
+</div>
+
+<main>
+    {{- .LayoutContent -}}
+</main>
+
+
+<footer class="mdui-container-fluid mdui-p-y-1" {{ if .forceBottom }} style="bottom: 0; position:absolute; width: 100%"{{- end -}}>
+    <div class="mdui-divider"></div>
+    <div class="mdui-typo-title mdui-text-center mdui-p-t-2">Clayton University Library</div>
+    <div class="mdui-typo-caption-opacity mdui-text-center mdui-p-t-1">Powered by DL4CSR</div>
+    <div class="mdui-typo-body-1-opacity mdui-text-center mdui-p-y-1">&copy; 2022 AreSZerA</div>
+</footer>
+
+</body>
+
+</html>
