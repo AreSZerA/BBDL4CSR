@@ -13,6 +13,17 @@ func (s Status) String() string {
 	}
 }
 
+func StatusCode(s string) Status {
+	switch s {
+	case StatusRejected:
+		return StatusCodeRejected
+	case StatusAccepted:
+		return StatusCodeAccepted
+	default:
+		return StatusCodeReviewing
+	}
+}
+
 type BlockchainObject interface {
 	Type() string
 	Keys() []string

@@ -75,6 +75,44 @@ func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 	return shim.Success(payload)
 }
 
+func UpdatePaperStatus(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) < 1 {
+		return shim.Error("function UpdatePaperStatus requires 1 argument")
+	}
+	if args[0] == "" {
+		return shim.Error("argument should be nonempty")
+	}
+	paperResp := RetrievePaperById(stub, args)
+	if paperResp.Status != shim.OK {
+		return shim.Error(fmt.Sprintf("failed to get paper information: %s", paperResp.Message))
+	}
+	var paper lib.Paper
+	err := json.Unmarshal(paperResp.Payload, &paper)
+	resp := RetrievePeerReviewsByPaperId(stub, []string{paper.ID})
+	if resp.Status != shim.OK {
+		return shim.Error(fmt.Sprintf("failed to retrieve peer review information: %s", resp.Message))
+	}
+	var peerReviews []lib.PeerReview
+	err = json.Unmarshal(resp.Payload, &peerReviews)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to userialise peer review information: %s", err.Error()))
+	}
+	var statuses []string
+	for _, peerReview := range peerReviews {
+		statuses = append(statuses, peerReview.Status)
+	}
+	status := util.GetStatus(statuses[0], statuses[1], statuses[2])
+	if paper.Status == status {
+		return shim.Success(nil)
+	}
+	paper.Status = status
+	payload, err := util.PutLedger(stub, paper)
+	if err != nil {
+		return shim.Error(fmt.Sprintf("failed to update ledger: %s", err.Error()))
+	}
+	return shim.Success(payload)
+}
+
 func RetrieveAllPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var papers []lib.Paper
 	results, err := util.GetAll(stub, lib.ObjectTypePaper)

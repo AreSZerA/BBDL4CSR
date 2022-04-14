@@ -2,6 +2,7 @@ package main
 
 import (
 	"chaincode/route"
+	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -31,10 +32,16 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrievePapersByEmail":   route.RetrievePapersByEmail,
 	"RetrievePapersByTitle":   route.RetrievePapersByTitle,
 	"RetrievePaperById":       route.RetrievePaperById,
+	"UpdatePaperStatus":       route.UpdatePaperStatus,
+
+	"UpdatePeerReview":             route.UpdatePeerReview,
+	"RetrievePeerReviewsByPaperId": route.RetrievePeerReviewsByPaperId,
+	"RetrievePeerReviewByIds":      route.RetrievePeerReviewByIds,
 }
 
 var funcNames = []string{
 	"ping",
+
 	"CreateUser",
 	"CreateReviewer",
 	"UpdateUserName",
@@ -55,6 +62,11 @@ var funcNames = []string{
 	"RetrievePapersByEmail",
 	"RetrievePapersByTitle",
 	"RetrievePaperById",
+	"UpdatePaperStatus",
+
+	"UpdatePeerReview",
+	"RetrievePeerReviewsByPaperId",
+	"RetrievePeerReviewByIds",
 }
 
 type DigitalLibrary struct {
@@ -70,7 +82,8 @@ func (library *DigitalLibrary) Invoke(stub shim.ChaincodeStubInterface) peer.Res
 	if ok {
 		return function(stub, args)
 	}
-	return shim.Error(fmt.Sprintf("Function not implemeted: %s. Available functions: %s.", funcName, funcNames))
+	funcNamesBytes, _ := json.Marshal(funcNames)
+	return shim.Error(fmt.Sprintf("Function not implemeted: %s. Available functions: %s.", funcName, string(funcNamesBytes)))
 }
 
 func main() {
