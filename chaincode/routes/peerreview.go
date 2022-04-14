@@ -69,6 +69,7 @@ func UpdatePeerReview(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 		return shim.Error(fmt.Sprintf("failed to update ledger: %s", err.Error()))
 	}
 	_ = UpdatePaperStatus(stub, []string{paperId})
+	_ = updateUserReviewingSub(stub, []string{reviewer})
 	return shim.Success(payload)
 }
 
