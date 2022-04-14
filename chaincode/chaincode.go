@@ -9,9 +9,8 @@ import (
 )
 
 var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
-	"ping": func(_ shim.ChaincodeStubInterface, _ []string) peer.Response {
-		return shim.Success([]byte("pong"))
-	},
+	"ping": func(shim.ChaincodeStubInterface, []string) peer.Response { return shim.Success([]byte("pong")) },
+
 	"CreateUser":                route.CreateUser,
 	"CreateReviewer":            route.CreateReviewer,
 	"UpdateUserName":            route.UpdateUserName,
@@ -23,7 +22,15 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveAllReviewers":      route.RetrieveAllReviewers,
 	"RetrieveCountAllUsers":     route.RetrieveCountAllUsers,
 	"RetrieveCountAllReviewers": route.RetrieveCountAllReviewers,
-	"CreatePaper":               route.CreatePaper,
+
+	"CreatePaper":             route.CreatePaper,
+	"RetrieveAllPapers":       route.RetrieveAllPapers,
+	"RetrieveAcceptedPapers":  route.RetrieveAcceptedPapers,
+	"RetrieveRejectedPapers":  route.RetrieveRejectedPapers,
+	"RetrieveReviewingPapers": route.RetrieveReviewingPapers,
+	"RetrievePapersByEmail":   route.RetrievePapersByEmail,
+	"RetrievePapersByTitle":   route.RetrievePapersByTitle,
+	"RetrievePaperById":       route.RetrievePaperById,
 }
 
 var funcNames = []string{
@@ -39,7 +46,15 @@ var funcNames = []string{
 	"RetrieveAllReviewers",
 	"RetrieveCountAllUsers",
 	"RetrieveCountAllReviewers",
+
 	"CreatePaper",
+	"RetrieveAllPapers",
+	"RetrieveAcceptedPapers",
+	"RetrieveRejectedPapers",
+	"RetrieveReviewingPapers",
+	"RetrievePapersByEmail",
+	"RetrievePapersByTitle",
+	"RetrievePaperById",
 }
 
 type DigitalLibrary struct {
