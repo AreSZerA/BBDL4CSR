@@ -156,17 +156,17 @@ func retrievePapersByQuery(stub shim.ChaincodeStubInterface, query string) peer.
 }
 
 func RetrieveAcceptedPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"selector":{"paper.status":"accepted"}}`
+	query := `{"selector":{"status":"accepted"}}`
 	return retrievePapersByQuery(stub, query)
 }
 
 func RetrieveRejectedPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"selector":{"paper.status":"rejected"}}`
+	query := `{"selector":{"status":"rejected"}}`
 	return retrievePapersByQuery(stub, query)
 }
 
 func RetrieveReviewingPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"selector":{"paper.status":"reviewing"}}`
+	query := `{"selector":{"status":"reviewing"}}`
 	return retrievePapersByQuery(stub, query)
 }
 
@@ -177,7 +177,7 @@ func RetrievePapersByEmail(stub shim.ChaincodeStubInterface, args []string) peer
 	if args[0] == "" {
 		return shim.Error("argument should be nonempty")
 	}
-	query := `{"selector":{"paper.uploader":"` + args[0] + `"}}`
+	query := `{"selector":{"uploader":"` + args[0] + `"}}`
 	return retrievePapersByQuery(stub, query)
 }
 
@@ -188,7 +188,7 @@ func RetrievePapersByTitle(stub shim.ChaincodeStubInterface, args []string) peer
 	if args[0] == "" {
 		return shim.Error("argument should be nonempty")
 	}
-	query := `{"selector":{"paper.uploader":"` + args[0] + `"}}`
+	query := `{"selector":{"uploader":"` + args[0] + `"}}`
 	return retrievePapersByQuery(stub, query)
 }
 
@@ -199,7 +199,7 @@ func RetrievePaperById(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	if args[0] == "" {
 		return shim.Error("argument should be nonempty")
 	}
-	query := `{"selector":{"paper.id":"` + args[0] + `"}}`
+	query := `{"selector":{"id":"` + args[0] + `"}}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve by query %s: %s", query, err.Error()))
