@@ -12,6 +12,7 @@ import (
 )
 
 func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	now := time.Now().UnixNano()
 	if len(args) < 5 {
 		return shim.Error("function CreatePaper requires 5 arguments")
 	}
@@ -50,12 +51,12 @@ func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 		return shim.Error("not enough reviewers to distribute")
 	}
 	var reviewerEmails [3]string
+	id := fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s%d", email, now))))
 	for i := 0; i < 3; i++ {
 		reviewerEmails[i] = reviewers[i].Email
 		_ = updateUserReviewingAdd(stub, []string{reviewers[i].Email})
+		_ = createPeerReview(stub, []string{id, reviewers[i].Email})
 	}
-	now := time.Now().UnixNano()
-	id := fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s%d", email, now))))
 	paper := lib.Paper{
 		ID:          id,
 		Uploader:    email,
