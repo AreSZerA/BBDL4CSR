@@ -1,8 +1,8 @@
-package route
+package routes
 
 import (
 	"chaincode/lib"
-	"chaincode/util"
+	"chaincode/utils"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -68,7 +68,7 @@ func CreatePaper(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 		PeerReviews: reviewerEmails,
 		Status:      lib.StatusReviewing,
 	}
-	payload, err := util.PutLedger(stub, paper)
+	payload, err := utils.PutLedger(stub, paper)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to put paper to ledger: %s", err.Error()))
 	}
@@ -101,12 +101,12 @@ func UpdatePaperStatus(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	for _, peerReview := range peerReviews {
 		statuses = append(statuses, peerReview.Status)
 	}
-	status := util.GetStatus(statuses[0], statuses[1], statuses[2])
+	status := utils.GetStatus(statuses[0], statuses[1], statuses[2])
 	if paper.Status == status {
 		return shim.Success(nil)
 	}
 	paper.Status = status
-	payload, err := util.PutLedger(stub, paper)
+	payload, err := utils.PutLedger(stub, paper)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to update ledger: %s", err.Error()))
 	}
@@ -115,7 +115,7 @@ func UpdatePaperStatus(stub shim.ChaincodeStubInterface, args []string) peer.Res
 
 func RetrieveAllPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var papers []lib.Paper
-	results, err := util.GetAll(stub, lib.ObjectTypePaper)
+	results, err := utils.GetAll(stub, lib.ObjectTypePaper)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve papers: %s", err.Error()))
 	}
@@ -136,7 +136,7 @@ func RetrieveAllPapers(stub shim.ChaincodeStubInterface, _ []string) peer.Respon
 
 func retrievePapersByQuery(stub shim.ChaincodeStubInterface, query string) peer.Response {
 	var papers []lib.Paper
-	results, err := util.GetByQuery(stub, query)
+	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve by query %s: %s", query, err.Error()))
 	}
@@ -200,7 +200,7 @@ func RetrievePaperById(stub shim.ChaincodeStubInterface, args []string) peer.Res
 		return shim.Error("argument should be nonempty")
 	}
 	query := `{"selector":{"paper.id":"` + args[0] + `"}}`
-	results, err := util.GetByQuery(stub, query)
+	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve by query %s: %s", query, err.Error()))
 	}

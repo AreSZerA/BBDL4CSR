@@ -1,7 +1,7 @@
 package main
 
 import (
-	"chaincode/route"
+	"chaincode/routes"
 	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -12,31 +12,31 @@ import (
 var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
 	"ping": func(shim.ChaincodeStubInterface, []string) peer.Response { return shim.Success([]byte("pong")) },
 
-	"CreateUser":                route.CreateUser,
-	"CreateReviewer":            route.CreateReviewer,
-	"UpdateUserName":            route.UpdateUserName,
-	"UpdateUserPasswd":          route.UpdateUserPasswd,
-	"UpdateUserIsReviewer":      route.UpdateUserIsReviewer,
-	"UpdateUserIsAdmin":         route.UpdateUserIsAdmin,
-	"RetrieveUserByEmail":       route.RetrieveUserByEmail,
-	"RetrieveAllUsers":          route.RetrieveAllUsers,
-	"RetrieveAllReviewers":      route.RetrieveAllReviewers,
-	"RetrieveCountAllUsers":     route.RetrieveCountAllUsers,
-	"RetrieveCountAllReviewers": route.RetrieveCountAllReviewers,
+	"CreateUser":                routes.CreateUser,
+	"CreateReviewer":            routes.CreateReviewer,
+	"UpdateUserName":            routes.UpdateUserName,
+	"UpdateUserPasswd":          routes.UpdateUserPasswd,
+	"UpdateUserIsReviewer":      routes.UpdateUserIsReviewer,
+	"UpdateUserIsAdmin":         routes.UpdateUserIsAdmin,
+	"RetrieveUserByEmail":       routes.RetrieveUserByEmail,
+	"RetrieveAllUsers":          routes.RetrieveAllUsers,
+	"RetrieveAllReviewers":      routes.RetrieveAllReviewers,
+	"RetrieveCountAllUsers":     routes.RetrieveCountAllUsers,
+	"RetrieveCountAllReviewers": routes.RetrieveCountAllReviewers,
 
-	"CreatePaper":             route.CreatePaper,
-	"RetrieveAllPapers":       route.RetrieveAllPapers,
-	"RetrieveAcceptedPapers":  route.RetrieveAcceptedPapers,
-	"RetrieveRejectedPapers":  route.RetrieveRejectedPapers,
-	"RetrieveReviewingPapers": route.RetrieveReviewingPapers,
-	"RetrievePapersByEmail":   route.RetrievePapersByEmail,
-	"RetrievePapersByTitle":   route.RetrievePapersByTitle,
-	"RetrievePaperById":       route.RetrievePaperById,
-	"UpdatePaperStatus":       route.UpdatePaperStatus,
+	"CreatePaper":             routes.CreatePaper,
+	"RetrieveAllPapers":       routes.RetrieveAllPapers,
+	"RetrieveAcceptedPapers":  routes.RetrieveAcceptedPapers,
+	"RetrieveRejectedPapers":  routes.RetrieveRejectedPapers,
+	"RetrieveReviewingPapers": routes.RetrieveReviewingPapers,
+	"RetrievePapersByEmail":   routes.RetrievePapersByEmail,
+	"RetrievePapersByTitle":   routes.RetrievePapersByTitle,
+	"RetrievePaperById":       routes.RetrievePaperById,
+	"UpdatePaperStatus":       routes.UpdatePaperStatus,
 
-	"UpdatePeerReview":             route.UpdatePeerReview,
-	"RetrievePeerReviewsByPaperId": route.RetrievePeerReviewsByPaperId,
-	"RetrievePeerReviewByIds":      route.RetrievePeerReviewByIds,
+	"UpdatePeerReview":             routes.UpdatePeerReview,
+	"RetrievePeerReviewsByPaperId": routes.RetrievePeerReviewsByPaperId,
+	"RetrievePeerReviewByIds":      routes.RetrievePeerReviewByIds,
 }
 
 var funcNames = []string{

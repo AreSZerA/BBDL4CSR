@@ -1,8 +1,8 @@
-package route
+package routes
 
 import (
 	"chaincode/lib"
-	"chaincode/util"
+	"chaincode/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -31,7 +31,7 @@ func createUserBase(stub shim.ChaincodeStubInterface, isReviewer bool, args []st
 	if resp.Payload != nil {
 		return shim.Error(fmt.Sprintf("email %s has been registered", email))
 	}
-	payload, err := util.PutLedger(stub, user)
+	payload, err := utils.PutLedger(stub, user)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to create user: %s", err.Error()))
 	}
@@ -77,7 +77,7 @@ func updateUserBase(stub shim.ChaincodeStubInterface, email string, field field,
 	default:
 		return shim.Error("invalid field type")
 	}
-	payload, err := util.PutLedger(stub, user)
+	payload, err := utils.PutLedger(stub, user)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to update ledger: %s", err.Error()))
 	}
@@ -162,7 +162,7 @@ func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.R
 		return shim.Error("argument should be nonempty")
 	}
 	email := args[0]
-	payload, err := util.GetByKeys(stub, lib.ObjectTypeUser, email)
+	payload, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve user by %s: %s", email, err.Error()))
 	}
@@ -171,7 +171,7 @@ func RetrieveUserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.R
 
 func RetrieveAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var users []lib.User
-	results, err := util.GetAll(stub, lib.ObjectTypeUser)
+	results, err := utils.GetAll(stub, lib.ObjectTypeUser)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve users: %s", err.Error()))
 	}
@@ -192,7 +192,7 @@ func RetrieveAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Respons
 
 func RetrieveAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var users []lib.User
-	results, err := util.GetByQuery(stub, `{"selector":{"is_reviewer":true}}`)
+	results, err := utils.GetByQuery(stub, `{"selector":{"is_reviewer":true}}`)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve users: %s", err.Error()))
 	}
@@ -213,7 +213,7 @@ func RetrieveAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Res
 
 func retrieveAllSortedReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	var users []lib.User
-	results, err := util.GetByQuery(stub, `{"selector":{"is_reviewer":true},"sort":[{"reviewing":"asc"}]}`)
+	results, err := utils.GetByQuery(stub, `{"selector":{"is_reviewer":true},"sort":[{"reviewing":"asc"}]}`)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve users: %s", err.Error()))
 	}
@@ -233,7 +233,7 @@ func retrieveAllSortedReviewers(stub shim.ChaincodeStubInterface, _ []string) pe
 }
 
 func RetrieveCountAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	results, err := util.GetAll(stub, lib.ObjectTypeUser)
+	results, err := utils.GetAll(stub, lib.ObjectTypeUser)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrive ledger: %s", err.Error()))
 	}
@@ -242,7 +242,7 @@ func RetrieveCountAllUsers(stub shim.ChaincodeStubInterface, _ []string) peer.Re
 
 func RetrieveCountAllReviewers(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 	query := `{"selector":{"is_reviewer":true}}`
-	results, err := util.GetByQuery(stub, query)
+	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrive ledger: %s", err.Error()))
 	}

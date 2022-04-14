@@ -1,8 +1,8 @@
-package route
+package routes
 
 import (
 	"chaincode/lib"
-	"chaincode/util"
+	"chaincode/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -24,7 +24,7 @@ func createPeerReview(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 		Reviewer: reviewer,
 		Status:   lib.StatusReviewing,
 	}
-	payload, err := util.PutLedger(stub, peerReview)
+	payload, err := utils.PutLedger(stub, peerReview)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to put ledger: %s", err.Error()))
 	}
@@ -64,7 +64,7 @@ func UpdatePeerReview(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 	peerReview.Status = status
 	peerReview.Comment = comment
 	peerReview.Time = now
-	payload, err := util.PutLedger(stub, peerReview)
+	payload, err := utils.PutLedger(stub, peerReview)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to update ledger: %s", err.Error()))
 	}
@@ -81,7 +81,7 @@ func RetrievePeerReviewsByPaperId(stub shim.ChaincodeStubInterface, args []strin
 	}
 	paperId := args[0]
 	query := `{"selector":{"paper":"` + paperId + `"}}`
-	results, err := util.GetByQuery(stub, query)
+	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to query: %s", err.Error()))
 	}
@@ -113,7 +113,7 @@ func RetrievePeerReviewByIds(stub shim.ChaincodeStubInterface, args []string) pe
 	}
 	paperId := args[0]
 	reviewer := args[1]
-	peerReviewBytes, err := util.GetByKeys(stub, lib.ObjectTypePeerReview, paperId, reviewer)
+	peerReviewBytes, err := utils.GetByKeys(stub, lib.ObjectTypePeerReview, paperId, reviewer)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to retrieve peer review: %s", err.Error()))
 	}
