@@ -181,6 +181,7 @@ case $1 in
   ;;
 "-s" | "--start")
   start_network
+  test_chaincode
   ;;
 "-p" | "--pause")
   stop_network
@@ -188,6 +189,7 @@ case $1 in
 "-u" | "--upgrade")
   install_chaincode "$2"
   upgrade_chaincode "$2"
+  test_chaincode
   ;;
 "-i" | "--invoke")
   args=""
