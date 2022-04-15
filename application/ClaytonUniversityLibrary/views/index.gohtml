@@ -1,3 +1,67 @@
-<div class="mdui-container-fluid">
-    <h1 class="mdui-typo-headline mdui-text-center">This is the index page</h1>
+<div class="mdui-container-fluid mdui-p-x-0 mdui-m-x-0">
+    <div class="mdui-card mdui-shadow-0" style="overflow: hidden; height: 48vh;">
+        <div class="mdui-card-media"></div>
+        <img alt="bookcase" src="/static/img/index.jpg" style="width: 100%; height: 48vh; object-fit: cover;">
+        <div class="mdui-card-media-covered" style="overflow: hidden">
+            <div class="mdui-card-primary">
+                <div class="mdui-card-primary-title">Welcome to Clayton University Library</div>
+                <div class="mdui-card-primary-subtitle">Powered by DL4SCR</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mdui-container mdui-p-x-5 mdui-p-t-2">
+    <div class="mdui-card mdui-m-y-1">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">{{- if .isLogin -}}Welcome to the library, {{ .username -}}!{{- else -}}You have not login{{- end -}}</div>
+        </div>
+        <div class="mdui-card-actions">
+            {{- if .isLogin -}}
+            {{- else -}}
+                <button class="mdui-btn" mdui-dialog="{target: '#dialog-login'}">login now</button>
+                <button class="mdui-btn" mdui-dialog="{target: '#dialog-register'}">register now</button>
+                <a href="/papers" class="mdui-btn mdui-float-right">latest papers</a>
+            {{- end -}}
+        </div>
+    </div>
+</div>
+
+<div class="mdui-container mdui-p-x-5 mdui-p-b-1">
+    <div class="mdui-card mdui-m-y-1">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">Q&A</div>
+        </div>
+        <div class="mdui-card-content mdui-p-x-0">
+            <div class="mdui-panel mdui-panel-gapless mdui-shadow-0" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header mdui-typo-title">
+                        <div class="mdui-panel-item-title">What can I do in the library?</div>
+                        <span class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</span>
+                    </div>
+                    <div class="mdui-panel-item-body">content</div>
+                </div>
+            </div>
+            <div class="mdui-divider"></div>
+            <div class="mdui-panel mdui-panel-gapless mdui-shadow-0" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header mdui-typo-title">
+                        <div class="mdui-panel-item-title">What is the peer review procedure?</div>
+                        <span class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</span>
+                    </div>
+                    <div class="mdui-panel-item-body">content</div>
+                </div>
+            </div>
+            <div class="mdui-divider"></div>
+            <div class="mdui-panel mdui-panel-gapless mdui-shadow-0" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header mdui-typo-title">
+                        <div class="mdui-panel-item-title">What is DL4CSR?</div>
+                        <span class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</span>
+                    </div>
+                    <div class="mdui-panel-item-body">DL4CSR is a public blockchain-based digital library service.</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -3,6 +3,7 @@ package models
 import (
 	"ClaytonUniversityLibrary/blockchain"
 	"encoding/json"
+	"fmt"
 )
 
 type User struct {
@@ -20,6 +21,9 @@ func FindUserByEmail(email string) (User, error) {
 		return User{}, err
 	}
 	var user User
+	if resp.Payload == nil {
+		return User{}, fmt.Errorf("user not exist")
+	}
 	err = json.Unmarshal(resp.Payload, &user)
 	if err != nil {
 		return User{}, err

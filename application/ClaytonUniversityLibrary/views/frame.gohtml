@@ -6,55 +6,87 @@
     <meta charset="UTF-8">
     <meta content="width=device-width,initial-scale=1" name="viewport">
     <title>Clayton University Library</title>
-    <!-- Import remotely -->
-    <!--link href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" rel="stylesheet" type="text/css"/-->
-    <!--script rel="script" src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js" type="application/javascript"></script-->
-    <!-- Import locally -->
+    {{/* Import remotely */}}
+    {{/* <link href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" rel="stylesheet" type="text/css"/>*/}}
+    {{/* <script rel="script" src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js" type="application/javascript"></script>*/}}
+    {{/* Import locally */}}
     <link href="/static/mdui/css/mdui.min.css" rel="stylesheet" type="text/css">
     <script rel="script" src="/static/mdui/js/mdui.min.js" type="application/javascript"></script>
+    <script rel="script" src="/static/js/ajax.js" type="application/javascript"></script>
+    <script rel="script" src="/static/js/user.js" type="application/javascript"></script>
 </header>
 
-<body class="mdui-theme-primary-red mdui-theme-accent-light-blue mdui-theme-layout-auto mdui-appbar-with-toolbar" style="display: flex; min-height: 91vh; flex-direction: column;">
+<body class="mdui-theme-primary-brown mdui-theme-accent-light-blue mdui-theme-layout-auto mdui-appbar-with-toolbar" style="display: flex; min-height: 91vh; flex-direction: column;">
 
 <div class="mdui-drawer mdui-drawer-close mdui-shadow-3" id="drawer">
     <ul class="mdui-list">
-        <li class="mdui-list-item mdui-ripple" onclick="window.location.href='/'">
+        <a class="mdui-list-item mdui-ripple" href="/">
             <span class="mdui-list-item-icon mdui-icon material-icons">home</span>
             <span class="mdui-list-item-content">Home page</span>
-        </li>
+        </a>
         <li class="mdui-subheader">Papers</li>
-        <li class="mdui-list-item mdui-ripple">
-            <span class="mdui-list-item-icon mdui-icon material-icons">file_upload</span>
-            <span class="mdui-list-item-content">Upload paper</span>
-        </li>
+        <a class="mdui-list-item mdui-ripple" href="/papers">
+            <span class="mdui-list-item-icon mdui-icon material-icons">library_books</span>
+            <span class="mdui-list-item-content">Latest papers</span>
+        </a>
+        {{- if .isLogin -}}
+            <a class="mdui-list-item mdui-ripple">
+                <span class="mdui-list-item-icon mdui-icon material-icons">file_upload</span>
+                <span class="mdui-list-item-content">Upload paper</span>
+            </a>
+            {{- if .isReviewer -}}
+                <a class="mdui-list-item mdui-ripple">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">rate_review</span>
+                    <span class="mdui-list-item-content">Peer review</span>
+                </a>
+            {{- end -}}
+        {{- end -}}
         <li class="mdui-subheader">User</li>
-        <li class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-login'}">
-            <span class="mdui-list-item-icon mdui-icon material-icons">person</span>
-            <span class="mdui-list-item-content">Login</span>
-        </li>
-        <li class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-register'}">
-            <span class="mdui-list-item-icon mdui-icon material-icons">person_add</span>
-            <span class="mdui-list-item-content">Register</span>
-        </li>
-        <li class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-logout'}">
-            <span class="mdui-list-item-icon mdui-icon material-icons">person_outline</span>
-            <span class="mdui-list-item-content">Logout</span>
-        </li>
+        {{- if .isLogin -}}
+            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-logout'}">
+                <span class="mdui-list-item-icon mdui-icon material-icons">person_outline</span>
+                <span class="mdui-list-item-content">Logout</span>
+            </a>
+        {{- else -}}
+            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-login'}">
+                <span class="mdui-list-item-icon mdui-icon material-icons">person</span>
+                <span class="mdui-list-item-content">Login</span>
+            </a>
+            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-register'}">
+                <span class="mdui-list-item-icon mdui-icon material-icons">person_add</span>
+                <span class="mdui-list-item-content">Register</span>
+            </a>
+        {{- end -}}
     </ul>
 </div>
 
-<header class="mdui-appbar mdui-appbar-fixed mdui-color-theme-900">
+<header class="mdui-appbar mdui-appbar-fixed mdui-color-theme-700">
     <div class="mdui-toolbar">
         <a class="mdui-btn mdui-btn-icon" mdui-drawer="{target:'#drawer'}">
             <span class="mdui-icon material-icons">menu</span>
         </a>
         <a class="mdui-typo-title">Clayton University Library</a>
+        <a class="mdui-toolbar-spacer"></a>
+        <a class="mdui-textfield mdui-textfield-expandable mdui-float-right" style="max-width: 60%">
+            <button class="mdui-textfield-icon mdui-btn mdui-btn-icon">
+                <span class="mdui-icon material-icons mdui-text-color-white">search</span>
+            </button>
+            <label for="search-keyword" hidden></label>
+            <input class="mdui-textfield-input" id="search-keyword" placeholder="Search in the library" style="color: white" type="text"/>
+            <button class="mdui-textfield-close mdui-btn mdui-btn-icon">
+                <span class="mdui-icon material-icons mdui-text-color-white">close</span>
+            </button>
+        </a>
     </div>
 </header>
 
 <main style="flex: 1">
     {{- .LayoutContent -}}
 </main>
+
+<button class="mdui-fab mdui-fab-fixed mdui-color-theme-accent mdui-ripple">
+    <span class="mdui-icon material-icons mdui-text-color-white">arrow_upward</span>
+</button>
 
 <div class="mdui-dialog" id="dialog-login">
     <div class="mdui-dialog-title">User Login</div>
@@ -68,13 +100,13 @@
         <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
             <span class="mdui-icon material-icons">vpn_key</span>
             <label class="mdui-textfield-label" for="login-password">Password</label>
-            <input class="mdui-textfield-input" id="login-password" required/>
+            <input class="mdui-textfield-input" id="login-password" type="password" required/>
             <div class="mdui-textfield-error">Please enter password</div>
         </div>
     </div>
     <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>login</button>
+        <button class="mdui-btn mdui-ripple" onclick="login()">login</button>
     </div>
 </div>
 
@@ -82,30 +114,27 @@
     <div class="mdui-dialog-title">User Register</div>
     <div class="mdui-dialog-content">
         <div class="mdui-textfield mdui-textfield-floating-label">
-            <span class="mdui-icon material-icons"
-                  mdui-tooltip="{content: 'E.g. claytonuniversity@dl4csr.org'}">email</span>
+            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'E.g. claytonuniversity@dl4csr.org'}">email</span>
             <label class="mdui-textfield-label" for="register-email">Email</label>
             <input class="mdui-textfield-input" id="register-email" type="email" required/>
             <div class="mdui-textfield-error">Illegal email format</div>
         </div>
         <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
-            <span class="mdui-icon material-icons"
-                  mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
+            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
             <label class="mdui-textfield-label" for="register-username">Username</label>
-            <input class="mdui-textfield-input" id="register-username" type="text" pattern="^\w{2,16}$" required/>
-            <div class="mdui-textfield-error">Invalid username format</div>
+            <input class="mdui-textfield-input" id="register-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
+            <div class="mdui-textfield-error">Illegal username format</div>
         </div>
         <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
-            <span class="mdui-icon material-icons"
-                  mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
+            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
             <label class="mdui-textfield-label" for="register-password">Password</label>
-            <input class="mdui-textfield-input" id="register-password" type="password" pattern="^\S{8,}$" required/>
-            <div class="mdui-textfield-error">Invalid password format</div>
+            <input class="mdui-textfield-input" id="register-password" maxlength="16" minlength="8" type="password" pattern="^\S{8,}$" required/>
+            <div class="mdui-textfield-error">Illegal password format</div>
         </div>
     </div>
     <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>register</button>
+        <button class="mdui-btn mdui-ripple" onclick="register()">register</button>
     </div>
 </div>
 
@@ -114,7 +143,7 @@
     <div class="mdui-dialog-content">Are you sure to logout?</div>
     <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>logout</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="logout()">logout</button>
     </div>
 </div>
 

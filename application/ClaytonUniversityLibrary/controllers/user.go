@@ -14,8 +14,8 @@ func (c *UserLoginController) Prepare() {
 }
 
 func (c *UserLoginController) Post() {
-	email := c.GetString("login-email")
-	passwd := c.GetString("login-password")
+	email := c.GetString("email")
+	passwd := c.GetString("password")
 	user := c.GetSession("user")
 	if user == nil {
 		user, err := models.FindUserByEmail(email)
@@ -71,9 +71,9 @@ func (c *UserRegisterController) Prepare() {
 }
 
 func (c *UserRegisterController) Post() {
-	email := c.GetString("register-email")
-	username := c.GetString("register-username")
-	passwd := c.GetString("register-password")
+	email := c.GetString("email")
+	username := c.GetString("username")
+	passwd := c.GetString("password")
 	err := models.RegisterUser(email, username, passwd)
 	if err != nil {
 		c.Ctx.WriteString(NewResp(false, err.Error()))
