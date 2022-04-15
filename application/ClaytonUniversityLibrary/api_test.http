@@ -1,0 +1,20 @@
+POST http://localhost:8080/users/login
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+login-email=test@email&login-password=12345678
+
+###
+
+POST http://localhost:8080/users/logout
+Content-Type: application/x-www-form-urlencoded
+Accept: application/json
+
+###
+
+POST http://localhost:8080/users/register
+Content-Type: application/x-www-form-urlencoded
+
+register-email=test@email&register-username=test&register-password=12345678
+
+###

@@ -1,0 +1,42 @@
+package models
+
+import (
+	"ClaytonUniversityLibrary/blockchain"
+	"encoding/json"
+)
+
+type User struct {
+	Email      string `json:"email"`
+	Name       string `json:"name"`
+	Passwd     string `json:"passwd"`
+	IsAdmin    bool   `json:"is_admin"`
+	IsReviewer bool   `json:"is_reviewer"`
+	Reviewing  uint16 `json:"reviewing"`
+}
+
+func ValidateUser(email string, passwd string) (bool, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveUserByEmail, []byte(email))
+	if err != nil {
+		return false, err
+	}
+	if resp.Payload == nil {
+		return false, nil
+	}
+	var user User
+	err = json.Unmarshal(resp.Payload, &user)
+	if err != nil {
+		return false, err
+	}
+	if user.Passwd != passwd {
+		return false, nil
+	}
+	return true, nil
+}
+
+func RegisterUser(email string, username string, passwd string) error {
+	_, err := blockchain.Execute(blockchain.FuncCreateUser, []byte(email), []byte(username), []byte(passwd))
+	if err != nil {
+		return err
+	}
+	return nil
+}
