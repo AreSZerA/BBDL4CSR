@@ -2,6 +2,7 @@ package main
 
 import (
 	"chaincode/routes"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -14,6 +15,7 @@ var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 
 	"CreateUser":                routes.CreateUser,
 	"CreateReviewer":            routes.CreateReviewer,
+	"CreateAdmin":               routes.CreateAdmin,
 	"UpdateUserName":            routes.UpdateUserName,
 	"UpdateUserPasswd":          routes.UpdateUserPasswd,
 	"UpdateUserIsReviewer":      routes.UpdateUserIsReviewer,
@@ -44,6 +46,7 @@ var funcNames = []string{
 
 	"CreateUser",
 	"CreateReviewer",
+	"CreateAdmin",
 	"UpdateUserName",
 	"UpdateUserPasswd",
 	"UpdateUserIsReviewer",
@@ -72,7 +75,11 @@ var funcNames = []string{
 type DigitalLibrary struct {
 }
 
-func (library *DigitalLibrary) Init(_ shim.ChaincodeStubInterface) peer.Response {
+func (library *DigitalLibrary) Init(stub shim.ChaincodeStubInterface) peer.Response {
+	resp := routes.CreateAdmin(stub, []string{"admin@dl4csr.org", "admin", fmt.Sprintf("%x", md5.Sum([]byte("12345678")))})
+	if resp.Status != shim.OK {
+		return shim.Error(fmt.Sprintf("failed to create admin: %s", resp.Message))
+	}
 	return shim.Success(nil)
 }
 

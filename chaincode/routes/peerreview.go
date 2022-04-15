@@ -81,7 +81,7 @@ func RetrievePeerReviewsByPaperId(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error("argument should be nonempty")
 	}
 	paperId := args[0]
-	query := `{"selector":{"paper":"` + paperId + `"}}`
+	query := `{"selector":{"peer_review_paper":"` + paperId + `"}}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("failed to query: %s", err.Error()))

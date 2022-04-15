@@ -5,6 +5,7 @@ const (
 
 	FuncCreateUser                = "CreateUser"
 	FuncCreateReviewer            = "CreateReviewer"
+	FuncCreateAdmin               = "CreateAdmin"
 	FuncUpdateUserName            = "UpdateUserName"
 	FuncUpdateUserPasswd          = "UpdateUserPasswd"
 	FuncUpdateUserIsReviewer      = "UpdateUserIsReviewer"

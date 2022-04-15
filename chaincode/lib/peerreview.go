@@ -1,11 +1,11 @@
 package lib
 
 type PeerReview struct {
-	Paper    string `json:"paper"`    // Paper ID
-	Reviewer string `json:"reviewer"` // User email
-	Status   string `json:"status"`
-	Comment  string `json:"comment,omitempty"`
-	Time     int64  `json:"time,omitempty"`
+	Paper    string `json:"peer_review_paper"`    // Paper ID
+	Reviewer string `json:"peer_review_reviewer"` // User email
+	Status   string `json:"peer_review_status"`
+	Comment  string `json:"peer_review_comment,omitempty"`
+	Time     int64  `json:"peer_review_time,omitempty"`
 }
 
 func (p PeerReview) Type() string {
