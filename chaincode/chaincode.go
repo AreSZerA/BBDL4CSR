@@ -1,7 +1,9 @@
 package main
 
 import (
-	"chaincode/routes"
+	"chaincode/routes/create"
+	"chaincode/routes/retrieve"
+	"chaincode/routes/update"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
@@ -10,73 +12,58 @@ import (
 	"os"
 )
 
-var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
-	"ping": func(shim.ChaincodeStubInterface, []string) peer.Response { return shim.Success([]byte("pong")) },
+var funcNames []string
 
-	"CreateUser":                routes.CreateUser,
-	"CreateReviewer":            routes.CreateReviewer,
-	"CreateAdmin":               routes.CreateAdmin,
-	"UpdateUserName":            routes.UpdateUserName,
-	"UpdateUserPasswd":          routes.UpdateUserPasswd,
-	"UpdateUserIsReviewer":      routes.UpdateUserIsReviewer,
-	"UpdateUserIsAdmin":         routes.UpdateUserIsAdmin,
-	"RetrieveUserByEmail":       routes.RetrieveUserByEmail,
-	"RetrieveAllUsers":          routes.RetrieveAllUsers,
-	"RetrieveAllReviewers":      routes.RetrieveAllReviewers,
-	"RetrieveCountAllUsers":     routes.RetrieveCountAllUsers,
-	"RetrieveCountAllReviewers": routes.RetrieveCountAllReviewers,
-
-	"CreatePaper":             routes.CreatePaper,
-	"RetrieveAllPapers":       routes.RetrieveAllPapers,
-	"RetrieveAcceptedPapers":  routes.RetrieveAcceptedPapers,
-	"RetrieveRejectedPapers":  routes.RetrieveRejectedPapers,
-	"RetrieveReviewingPapers": routes.RetrieveReviewingPapers,
-	"RetrievePapersByEmail":   routes.RetrievePapersByEmail,
-	"RetrievePapersByTitle":   routes.RetrievePapersByTitle,
-	"RetrievePaperById":       routes.RetrievePaperById,
-	"UpdatePaperStatus":       routes.UpdatePaperStatus,
-
-	"UpdatePeerReview":             routes.UpdatePeerReview,
-	"RetrievePeerReviewsByPaperId": routes.RetrievePeerReviewsByPaperId,
-	"RetrievePeerReviewByIds":      routes.RetrievePeerReviewByIds,
+func init() {
+	for key := range funcMap {
+		funcNames = append(funcNames, key)
+	}
 }
 
-var funcNames = []string{
-	"ping",
-
-	"CreateUser",
-	"CreateReviewer",
-	"CreateAdmin",
-	"UpdateUserName",
-	"UpdateUserPasswd",
-	"UpdateUserIsReviewer",
-	"UpdateUserIsAdmin",
-	"RetrieveUserByEmail",
-	"RetrieveAllUsers",
-	"RetrieveAllReviewers",
-	"RetrieveCountAllUsers",
-	"RetrieveCountAllReviewers",
-
-	"CreatePaper",
-	"RetrieveAllPapers",
-	"RetrieveAcceptedPapers",
-	"RetrieveRejectedPapers",
-	"RetrieveReviewingPapers",
-	"RetrievePapersByEmail",
-	"RetrievePapersByTitle",
-	"RetrievePaperById",
-	"UpdatePaperStatus",
-
-	"UpdatePeerReview",
-	"RetrievePeerReviewsByPaperId",
-	"RetrievePeerReviewByIds",
+var funcMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
+	"ping": func(shim.ChaincodeStubInterface, []string) peer.Response { return shim.Success([]byte("pong")) },
+	// Create
+	"CreateUser":     create.User,
+	"CreateReviewer": create.Reviewer,
+	"CreateAdmin":    create.Admin,
+	"CreatePaper":    create.Paper,
+	// Update
+	"UpdateUserByName":                   update.UserByEmail,
+	"UpdateUserName":                     update.UserName,
+	"UpdateUserPassword":                 update.UserPassword,
+	"UpdateUserIsReviewer":               update.UserIsReviewer,
+	"UpdateUserIsNotReviewer":            update.UserIsNotReviewer,
+	"UpdateUserIsAdmin":                  update.UserIsAdmin,
+	"UpdateUserIsNotAdmin":               update.UserIsNotAdmin,
+	"UpdateUserReviewing":                update.UserReviewing,
+	"UpdatePaperById":                    update.PaperById,
+	"UpdatePeerReviewByPaperAndReviewer": update.PeerReviewByPaperAndReviewer,
+	// Retrieve
+	"RetrieveUsers":                   retrieve.Users,
+	"RetrieveUsersByName":             retrieve.UsersByName,
+	"RetrieveUsersIsReviewer":         retrieve.UsersIsReviewer,
+	"RetrieveUsersIsAdmin":            retrieve.UsersIsAdmin,
+	"RetrieveUsersByPaperId":          retrieve.UsersByPaperId,
+	"RetrieveUserByEmail":             retrieve.UserByEmail,
+	"RetrievePapers":                  retrieve.Papers,
+	"RetrieveAcceptedPapersByTitle":   retrieve.AcceptedPapersByTitle,
+	"RetrieveAcceptedPapersByAuthor":  retrieve.AcceptedPapersByAuthor,
+	"RetrieveAcceptedPapersByKeyword": retrieve.AcceptedPapersByKeyword,
+	"RetrieveAcceptedPapers":          retrieve.AcceptedPapers,
+	"RejectedPapers":                  retrieve.RejectedPapers,
+	"RejectedPapersByAuthor":          retrieve.RejectedPapersByAuthor,
+	"ReviewingPapers":                 retrieve.ReviewingPapers,
+	"ReviewingPapersByAuthor":         retrieve.ReviewingPapersByAuthor,
+	"RetrievePaperById":               retrieve.PaperById,
+	"RetrievePeerReviewsByReviewer":   retrieve.PeerReviewsByReviewer,
+	// Delete
 }
 
 type DigitalLibrary struct {
 }
 
 func (library *DigitalLibrary) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	resp := routes.CreateAdmin(stub, []string{"admin@dl4csr.org", "admin", fmt.Sprintf("%x", md5.Sum([]byte("12345678")))})
+	resp := create.Admin(stub, []string{"admin@dl4csr.org", "admin", fmt.Sprintf("%x", md5.Sum([]byte("12345678")))})
 	if resp.Status != shim.OK {
 		return shim.Error(fmt.Sprintf("failed to create admin: %s", resp.Message))
 	}

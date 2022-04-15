@@ -1,13 +1,10 @@
 {
   "index": {
     "fields": [
-      "paper_title",
-      "paper_authors",
-      "paper_keywords",
-      "paper_review_time"
+      "user_reviewing"
     ]
   },
-  "ddoc": "paperIndex",
-  "name": "paper_json_index",
+  "ddoc": "userIndex",
+  "name": "user_reviewing_json_index",
   "type": "json"
 }

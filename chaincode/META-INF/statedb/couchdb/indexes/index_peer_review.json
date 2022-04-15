@@ -1,6 +1,8 @@
 {
   "index": {
     "fields": [
+      "peer_review_reviewer",
+      "peer_review_status",
       "peer_review_time"
     ]
   },
