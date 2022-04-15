@@ -14,23 +14,17 @@ type User struct {
 	Reviewing  uint16 `json:"reviewing"`
 }
 
-func ValidateUser(email string, passwd string) (bool, error) {
+func FindUserByEmail(email string) (User, error) {
 	resp, err := blockchain.Query(blockchain.FuncRetrieveUserByEmail, []byte(email))
 	if err != nil {
-		return false, err
-	}
-	if resp.Payload == nil {
-		return false, nil
+		return User{}, err
 	}
 	var user User
 	err = json.Unmarshal(resp.Payload, &user)
 	if err != nil {
-		return false, err
+		return User{}, err
 	}
-	if user.Passwd != passwd {
-		return false, nil
-	}
-	return true, nil
+	return user, nil
 }
 
 func RegisterUser(email string, username string, passwd string) error {

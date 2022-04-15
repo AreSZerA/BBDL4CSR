@@ -16,18 +16,18 @@ func (c *UserLoginController) Prepare() {
 func (c *UserLoginController) Post() {
 	email := c.GetString("login-email")
 	passwd := c.GetString("login-password")
-	sess := c.GetSession("user")
-	if sess == nil {
-		ok, err := models.ValidateUser(email, passwd)
+	user := c.GetSession("user")
+	if user == nil {
+		user, err := models.FindUserByEmail(email)
 		if err != nil {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return
 		}
-		if !ok {
+		if user.Passwd != passwd {
 			c.Ctx.WriteString(NewResp(false, ""))
 			return
 		}
-		err = c.SetSession("user", email)
+		err = c.SetSession("user", user)
 		if err != nil {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return
@@ -48,12 +48,12 @@ func (c *UserLogoutController) Prepare() {
 }
 
 func (c *UserLogoutController) Post() {
-	sess := c.GetSession("user")
-	if sess == nil {
+	user := c.GetSession("user")
+	if user == nil {
 		c.Ctx.WriteString(NewResp(false, "you have not login"))
 		return
 	}
-	err := c.DelSession("user")
+	err := c.DestroySession()
 	if err != nil {
 		c.Ctx.WriteString(NewResp(false, err.Error()))
 		return
