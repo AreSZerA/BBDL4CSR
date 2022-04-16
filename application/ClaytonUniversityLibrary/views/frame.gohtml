@@ -13,7 +13,8 @@
     <link href="/static/mdui/css/mdui.min.css" rel="stylesheet" type="text/css">
     <script rel="script" src="/static/mdui/js/mdui.min.js" type="application/javascript"></script>
     <script rel="script" src="/static/js/ajax.js" type="application/javascript"></script>
-    <script rel="script" src="/static/js/user.js" type="application/javascript"></script>
+    <script rel="script" src="/static/js/base.js" type="application/javascript"></script>
+    <script rel="script" src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js" type="application/javascript"></script>
 </header>
 
 <body class="mdui-theme-primary-brown mdui-theme-accent-light-blue mdui-theme-layout-auto mdui-appbar-with-toolbar" style="display: flex; min-height: 91vh; flex-direction: column;">
@@ -22,27 +23,35 @@
     <ul class="mdui-list">
         <a class="mdui-list-item mdui-ripple" href="/">
             <span class="mdui-list-item-icon mdui-icon material-icons">home</span>
-            <span class="mdui-list-item-content">Home page</span>
+            <span class="mdui-list-item-content">Home Page</span>
         </a>
         <li class="mdui-subheader">Papers</li>
         <a class="mdui-list-item mdui-ripple" href="/papers">
             <span class="mdui-list-item-icon mdui-icon material-icons">library_books</span>
-            <span class="mdui-list-item-content">Latest papers</span>
+            <span class="mdui-list-item-content">Latest Papers</span>
         </a>
         {{- if .isLogin -}}
-            <a class="mdui-list-item mdui-ripple">
+            <a class="mdui-list-item mdui-ripple" href="/papers/upload">
                 <span class="mdui-list-item-icon mdui-icon material-icons">file_upload</span>
-                <span class="mdui-list-item-content">Upload paper</span>
+                <span class="mdui-list-item-content">Upload Paper</span>
             </a>
             {{- if .isReviewer -}}
                 <a class="mdui-list-item mdui-ripple">
                     <span class="mdui-list-item-icon mdui-icon material-icons">rate_review</span>
-                    <span class="mdui-list-item-content">Peer review</span>
+                    <span class="mdui-list-item-content">Peer Review</span>
                 </a>
             {{- end -}}
         {{- end -}}
         <li class="mdui-subheader">User</li>
         {{- if .isLogin -}}
+            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-username'}">
+                <span class="mdui-list-item-icon mdui-icon material-icons">assignment_ind</span>
+                <span class="mdui-list-item-content">Update Username</span>
+            </a>
+            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-password'}">
+                <span class="mdui-list-item-icon mdui-icon material-icons">vpn_key</span>
+                <span class="mdui-list-item-content">Update Password</span>
+            </a>
             <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-logout'}">
                 <span class="mdui-list-item-icon mdui-icon material-icons">person_outline</span>
                 <span class="mdui-list-item-content">Logout</span>
@@ -88,64 +97,110 @@
     <span class="mdui-icon material-icons mdui-text-color-white">arrow_upward</span>
 </button>
 
-<div class="mdui-dialog" id="dialog-login">
-    <div class="mdui-dialog-title">User Login</div>
-    <div class="mdui-dialog-content">
-        <div class="mdui-textfield mdui-textfield-floating-label">
-            <span class="mdui-icon material-icons">email</span>
-            <label class="mdui-textfield-label" for="login-email">Email</label>
-            <input class="mdui-textfield-input" id="login-email" required/>
-            <div class="mdui-textfield-error">Please enter email</div>
+{{- if .isLogin -}}
+    <div class="mdui-dialog" id="dialog-update-username">
+        <div class="mdui-dialog-title">Update Username</div>
+        <div class="mdui-dialog-content">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
+                <label class="mdui-textfield-label" for="update-username-username">New Username</label>
+                <input class="mdui-textfield-input" id="update-username-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
+                <div class="mdui-textfield-error">Illegal username format</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons">security</span>
+                <label class="mdui-textfield-label" for="update-username-password">Password</label>
+                <input class="mdui-textfield-input" id="update-username-password" type="password" required/>
+                <div class="mdui-textfield-error">Please enter password</div>
+            </div>
         </div>
-        <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
-            <span class="mdui-icon material-icons">vpn_key</span>
-            <label class="mdui-textfield-label" for="login-password">Password</label>
-            <input class="mdui-textfield-input" id="login-password" type="password" required/>
-            <div class="mdui-textfield-error">Please enter password</div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="updateUsername()">update</button>
         </div>
     </div>
-    <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" onclick="login()">login</button>
-    </div>
-</div>
 
-<div class="mdui-dialog" id="dialog-register">
-    <div class="mdui-dialog-title">User Register</div>
-    <div class="mdui-dialog-content">
-        <div class="mdui-textfield mdui-textfield-floating-label">
-            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'E.g. claytonuniversity@dl4csr.org'}">email</span>
-            <label class="mdui-textfield-label" for="register-email">Email</label>
-            <input class="mdui-textfield-input" id="register-email" type="email" required/>
-            <div class="mdui-textfield-error">Illegal email format</div>
+    <div class="mdui-dialog" id="dialog-update-password">
+        <div class="mdui-dialog-title">Update Password</div>
+        <div class="mdui-dialog-content">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
+                <label class="mdui-textfield-label" for="update-password-new">New password</label>
+                <input class="mdui-textfield-input" id="update-password-new" maxlength="16" minlength="8" type="password" pattern="^\S{8,16}$" required/>
+                <div class="mdui-textfield-error">Invalid password format</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons">security</span>
+                <label class="mdui-textfield-label" for="update-password-old">Old password</label>
+                <input class="mdui-textfield-input" id="update-password-old" type="password" required/>
+                <div class="mdui-textfield-error">Please enter password</div>
+            </div>
         </div>
-        <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
-            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
-            <label class="mdui-textfield-label" for="register-username">Username</label>
-            <input class="mdui-textfield-input" id="register-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
-            <div class="mdui-textfield-error">Illegal username format</div>
-        </div>
-        <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
-            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
-            <label class="mdui-textfield-label" for="register-password">Password</label>
-            <input class="mdui-textfield-input" id="register-password" maxlength="16" minlength="8" type="password" pattern="^\S{8,}$" required/>
-            <div class="mdui-textfield-error">Illegal password format</div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="updatePassword()">update</button>
         </div>
     </div>
-    <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" onclick="register()">register</button>
-    </div>
-</div>
 
-<div class="mdui-dialog" id="dialog-logout">
-    <div class="mdui-dialog-title">User Logout</div>
-    <div class="mdui-dialog-content">Are you sure to logout?</div>
-    <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="logout()">logout</button>
+    <div class="mdui-dialog" id="dialog-logout">
+        <div class="mdui-dialog-title">User Logout</div>
+        <div class="mdui-dialog-content">Are you sure to logout?</div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="logout()">logout</button>
+        </div>
     </div>
-</div>
+{{- else -}}
+    <div class="mdui-dialog" id="dialog-login">
+        <div class="mdui-dialog-title">User Login</div>
+        <div class="mdui-dialog-content">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <span class="mdui-icon material-icons">email</span>
+                <label class="mdui-textfield-label" for="login-email">Email</label>
+                <input class="mdui-textfield-input" id="login-email" required/>
+                <div class="mdui-textfield-error">Please enter email</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons">vpn_key</span>
+                <label class="mdui-textfield-label" for="login-password">Password</label>
+                <input class="mdui-textfield-input" id="login-password" type="password" required/>
+                <div class="mdui-textfield-error">Please enter password</div>
+            </div>
+        </div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+            <button class="mdui-btn mdui-ripple" onclick="login()">login</button>
+        </div>
+    </div>
+
+    <div class="mdui-dialog" id="dialog-register">
+        <div class="mdui-dialog-title">User Register</div>
+        <div class="mdui-dialog-content">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'E.g. claytonuniversity@dl4csr.org'}">email</span>
+                <label class="mdui-textfield-label" for="register-email">Email</label>
+                <input class="mdui-textfield-input" id="register-email" type="email" required/>
+                <div class="mdui-textfield-error">Illegal email format</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
+                <label class="mdui-textfield-label" for="register-username">Username</label>
+                <input class="mdui-textfield-input" id="register-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
+                <div class="mdui-textfield-error">Illegal username format</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
+                <label class="mdui-textfield-label" for="register-password">Password</label>
+                <input class="mdui-textfield-input" id="register-password" maxlength="16" minlength="8" type="password" pattern="^\S{8,16}$" required/>
+                <div class="mdui-textfield-error">Illegal password format</div>
+            </div>
+        </div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+            <button class="mdui-btn mdui-ripple" onclick="register()">register</button>
+        </div>
+    </div>
+{{- end -}}
 
 <footer class="mdui-container-fluid mdui-p-y-1 mdui-p-x-0" style="width: 100%;">
     <div class="mdui-divider"></div>

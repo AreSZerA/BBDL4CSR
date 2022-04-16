@@ -1,9 +1,21 @@
 package controllers
 
-import beego "github.com/beego/beego/v2/server/web"
+import (
+	"ClaytonUniversityLibrary/models"
+	beego "github.com/beego/beego/v2/server/web"
+)
 
 type ErrorController struct {
 	beego.Controller
+}
+
+func (c *ErrorController) Prepare() {
+	user := c.GetSession("user")
+	c.Data["isLogin"] = user != nil
+	if user != nil {
+		c.Data["isReviewer"] = user.(models.User).IsReviewer
+		c.Data["username"] = user.(models.User).Name
+	}
 }
 
 func (c *ErrorController) Error401() {

@@ -3,6 +3,7 @@ package controllers
 import (
 	"ClaytonUniversityLibrary/models"
 	beego "github.com/beego/beego/v2/server/web"
+	"net/http"
 )
 
 type UserLoginController struct {
@@ -15,7 +16,7 @@ func (c *UserLoginController) Prepare() {
 
 func (c *UserLoginController) Post() {
 	email := c.GetString("email")
-	passwd := c.GetString("password")
+	password := c.GetString("password")
 	user := c.GetSession("user")
 	if user == nil {
 		user, err := models.FindUserByEmail(email)
@@ -23,7 +24,7 @@ func (c *UserLoginController) Post() {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return
 		}
-		if user.Passwd != passwd {
+		if user.Password != password {
 			c.Ctx.WriteString(NewResp(false, ""))
 			return
 		}
@@ -73,12 +74,67 @@ func (c *UserRegisterController) Prepare() {
 func (c *UserRegisterController) Post() {
 	email := c.GetString("email")
 	username := c.GetString("username")
-	passwd := c.GetString("password")
-	err := models.RegisterUser(email, username, passwd)
+	password := c.GetString("password")
+	err := models.RegisterUser(email, username, password)
 	if err != nil {
 		c.Ctx.WriteString(NewResp(false, err.Error()))
 		return
 	}
 	c.Ctx.WriteString(NewResp(true, ""))
 	return
+}
+
+type UserUpdateController struct {
+	beego.Controller
+}
+
+func (c *UserUpdateController) Prepare() {
+	c.Ctx.Output.Header("content-type", "application/json")
+}
+
+func (c *UserUpdateController) Post() {
+	sess := c.GetSession("user")
+	if sess == nil {
+		c.Ctx.Output.Status = http.StatusUnauthorized
+		return
+	}
+	field := c.GetString("field")
+	user := sess.(models.User)
+	switch field {
+	case "username":
+		username := c.GetString("username")
+		password := c.GetString("password")
+		if password != sess.(models.User).Password {
+			c.Ctx.WriteString(NewResp(false, "wrong password"))
+			return
+		}
+		user.Name = username
+		err := models.UpdateUsername(user.Email, username)
+		if err != nil {
+			c.Ctx.WriteString(NewResp(false, err.Error()))
+			return
+		}
+		_ = c.SetSession("user", user)
+		c.Ctx.WriteString(NewResp(true, ""))
+		return
+	case "password":
+		oldPassword := c.GetString("oldPassword")
+		newPassword := c.GetString("newPassword")
+		if oldPassword != sess.(models.User).Password {
+			c.Ctx.WriteString(NewResp(false, "wrong password"))
+			return
+		}
+		user.Password = newPassword
+		err := models.UpdatePassword(user.Email, newPassword)
+		if err != nil {
+			c.Ctx.WriteString(NewResp(false, err.Error()))
+			return
+		}
+		_ = c.SetSession("user", user)
+		c.Ctx.WriteString(NewResp(true, ""))
+		return
+	default:
+		c.Ctx.Output.Status = http.StatusNotAcceptable
+		return
+	}
 }

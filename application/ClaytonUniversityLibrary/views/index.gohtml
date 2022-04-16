@@ -14,15 +14,16 @@
 <div class="mdui-container mdui-p-x-5 mdui-p-t-2">
     <div class="mdui-card mdui-m-y-1">
         <div class="mdui-card-primary">
-            <div class="mdui-card-primary-title">{{- if .isLogin -}}Welcome to the library, {{ .username -}}!{{- else -}}You have not login{{- end -}}</div>
+            <div class="mdui-card-primary-title">{{- if .isLogin -}}Hi, {{ .username -}}, welcome to the library{{- else -}}You have not login{{- end -}}</div>
         </div>
         <div class="mdui-card-actions">
             {{- if .isLogin -}}
+                <a class="mdui-btn" href="/papers/upload" mdui-dialog="{target: '#dialog-update'}">upload paper</a>
             {{- else -}}
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-login'}">login now</button>
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-register'}">register now</button>
-                <a href="/papers" class="mdui-btn mdui-float-right">latest papers</a>
             {{- end -}}
+            <a href="/papers" class="mdui-btn mdui-float-right">latest papers</a>
         </div>
     </div>
 </div>
@@ -47,6 +48,16 @@
                 <div class="mdui-panel-item">
                     <div class="mdui-panel-item-header mdui-typo-title">
                         <div class="mdui-panel-item-title">What is the peer review procedure?</div>
+                        <span class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</span>
+                    </div>
+                    <div class="mdui-panel-item-body">content</div>
+                </div>
+            </div>
+            <div class="mdui-divider"></div>
+            <div class="mdui-panel mdui-panel-gapless mdui-shadow-0" mdui-panel>
+                <div class="mdui-panel-item">
+                    <div class="mdui-panel-item-header mdui-typo-title">
+                        <div class="mdui-panel-item-title">How to be a reviewer?</div>
                         <span class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</span>
                     </div>
                     <div class="mdui-panel-item-body">content</div>

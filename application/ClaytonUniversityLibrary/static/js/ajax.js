@@ -15,7 +15,7 @@ class AJAXRequest {
     get = () => {
         let req = new XMLHttpRequest()
         req.setRequestHeader("Accept", "application/json")
-        req.open("GET", `${this.#url}/${this.#body}`, false)
+        req.open("GET", `${this.#url}/${this.#body}`, true)
         req.onreadystatechange = () => {
             if (req.readyState === 4) {
                 if (req.status === 200) {
@@ -30,7 +30,7 @@ class AJAXRequest {
 
     post = () => {
         let req = new XMLHttpRequest()
-        req.open("POST", this.#url, false)
+        req.open("POST", this.#url, true)
         req.setRequestHeader("Accept", "application/json")
         req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
         req.onreadystatechange = () => {
