@@ -87,13 +87,16 @@ func UsersByPaperId(stub shim.ChaincodeStubInterface, args []string) peer.Respon
 	if err != nil {
 		return shim.Error(err.Error())
 	}
+	if len(results) == 0 {
+		return shim.Error(lib.ErrPaperNotFound.Error())
+	}
 	query = `{"selector":{"user_email":{"$or":["`
 	for i, result := range results {
-		var peerReview lib.User
+		var peerReview lib.PeerReview
 		_ = json.Unmarshal(result, &peerReview)
-		query += peerReview.Email
+		query += peerReview.Reviewer
 		if i < len(results)-1 {
-			query += ","
+			query += `","`
 		} else {
 			query += `"]}}}`
 		}
@@ -118,7 +121,7 @@ func UserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	userBytes, err := utils.GetByKeys(stub, email)
+	userBytes, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

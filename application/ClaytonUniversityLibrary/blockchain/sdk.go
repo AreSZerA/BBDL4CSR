@@ -26,6 +26,7 @@ func init() {
 	}
 }
 
+// Execute for updating
 func Execute(functionName string, args ...[]byte) (channel.Response, error) {
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithOrg(orgName), fabsdk.WithUser(userName))
 	cli, err := channel.New(ctx)
@@ -40,6 +41,7 @@ func Execute(functionName string, args ...[]byte) (channel.Response, error) {
 	return resp, nil
 }
 
+// Query for retrieving only
 func Query(functionName string, args ...[]byte) (channel.Response, error) {
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithOrg(orgName), fabsdk.WithUser(userName))
 	cli, err := channel.New(ctx)

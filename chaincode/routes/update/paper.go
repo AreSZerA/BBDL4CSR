@@ -36,7 +36,7 @@ func PaperById(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 			go func() { _, _ = utils.PutLedger(stub, peerReview) }()
 		} else {
 			_ = json.Unmarshal(result, &peerReview)
-			if final > peerReview.Time {
+			if final < peerReview.Time {
 				final = peerReview.Time
 			}
 		}

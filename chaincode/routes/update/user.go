@@ -15,7 +15,7 @@ func UserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -24,14 +24,20 @@ func UserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 	}
 	var user lib.User
 	_ = json.Unmarshal(result, &user)
-	if !user.IsReviewer {
-		return shim.Success(result)
-	}
-	query := `{"selector":{"$and":[{"peer_review_reviewer","` + email + `"},{"$ne":{"peer_review_status":"reviewing"}}]}}`
+	query := `{"selector":{"$and":[{"peer_review_reviewer":"` + email + `"},{"peer_review_status":"reviewing"}]}}`
 	results, err := utils.GetByQuery(stub, query)
-	user.Reviewing = uint16(len(results))
-	userBytes, _ := json.Marshal(user)
-	return shim.Success(userBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	if user.Reviewing != uint16(len(results)) {
+		user.Reviewing = uint16(len(results))
+		userBytes, err := utils.PutLedger(stub, user)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		return shim.Success(userBytes)
+	}
+	return shim.Success(result)
 }
 
 func UserName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -40,7 +46,7 @@ func UserName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		return shim.Error(err.Error())
 	}
 	email, name := args[0], args[1]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -63,7 +69,7 @@ func UserPassword(stub shim.ChaincodeStubInterface, args []string) peer.Response
 		return shim.Error(err.Error())
 	}
 	email, password := args[0], args[1]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -86,7 +92,7 @@ func UserIsReviewer(stub shim.ChaincodeStubInterface, args []string) peer.Respon
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -109,7 +115,7 @@ func UserIsNotReviewer(stub shim.ChaincodeStubInterface, args []string) peer.Res
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -132,7 +138,7 @@ func UserIsAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -155,7 +161,7 @@ func UserIsNotAdmin(stub shim.ChaincodeStubInterface, args []string) peer.Respon
 		return shim.Error(err.Error())
 	}
 	email := args[0]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -178,7 +184,7 @@ func UserReviewing(stub shim.ChaincodeStubInterface, args []string) peer.Respons
 		return shim.Error(err.Error())
 	}
 	email, reviewingString := args[0], args[1]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

@@ -13,7 +13,7 @@ func User(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		return shim.Error(err.Error())
 	}
 	email, username, password := args[0], args[1], args[2]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -34,7 +34,7 @@ func Reviewer(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		return shim.Error(err.Error())
 	}
 	email, username, password := args[0], args[1], args[2]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -55,7 +55,7 @@ func Admin(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		return shim.Error(err.Error())
 	}
 	email, username, password := args[0], args[1], args[2]
-	result, err := utils.GetByKeys(stub, email)
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

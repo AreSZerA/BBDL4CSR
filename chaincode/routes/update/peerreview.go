@@ -35,6 +35,7 @@ func PeerReviewByPaperAndReviewer(stub shim.ChaincodeStubInterface, args []strin
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	go func() { _ = PaperById(stub, []string{paperId}) }()
+	_ = UserByEmail(stub, []string{reviewer})
+	_ = PaperById(stub, []string{paperId})
 	return shim.Success(peerReviewBytes)
 }

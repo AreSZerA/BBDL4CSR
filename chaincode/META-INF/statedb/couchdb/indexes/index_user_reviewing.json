@@ -4,7 +4,7 @@
       "user_reviewing"
     ]
   },
-  "ddoc": "userIndex",
+  "ddoc": "userReviewingIndex",
   "name": "user_reviewing_json_index",
   "type": "json"
 }

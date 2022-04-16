@@ -29,7 +29,7 @@ func AcceptedPapersByTitle(stub shim.ChaincodeStubInterface, args []string) peer
 		return shim.Error(err.Error())
 	}
 	title := args[0]
-	query := `{"selector":{"$and":[{"$regex":{"paper_title":"^.*?` + title + `.*?$"}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
+	query := `{"selector":{"$and":[{"paper_title":{"$regex":".*?` + title + `.*?"}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -50,7 +50,7 @@ func AcceptedPapersByAuthor(stub shim.ChaincodeStubInterface, args []string) pee
 		return shim.Error(err.Error())
 	}
 	author := args[0]
-	query := `{"selector":{"$and":[{"$in":{"paper_author":"` + author + `"}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
+	query := `{"selector":{"$and":[{"paper_authors":{"$in":["` + author + `"]}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -71,7 +71,7 @@ func AcceptedPapersByKeyword(stub shim.ChaincodeStubInterface, args []string) pe
 		return shim.Error(err.Error())
 	}
 	keyword := args[0]
-	query := `{"selector":{"$and":[{"$in":{"paper_keywords":"` + keyword + `"}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
+	query := `{"selector":{"$and":[{"paper_keywords":{"$in":["` + keyword + `"]}},{"paper_status":"accepted"}]},"sort":[{"paper_review_time":"desc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -124,7 +124,7 @@ func RejectedPapersByAuthor(stub shim.ChaincodeStubInterface, args []string) pee
 		return shim.Error(err.Error())
 	}
 	author := args[0]
-	query := `{"selector":{"$and":[{"$in":{"paper_author":"` + author + `"}},{"paper_status":"rejected"}]},"sort":[{"paper_review_time":"desc"}]}`
+	query := `{"selector":{"$and":[{"paper_authors":{"$in":["` + author + `"]}},{"paper_status":"rejected"}]},"sort":[{"paper_review_time":"desc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -161,7 +161,7 @@ func ReviewingPapersByAuthor(stub shim.ChaincodeStubInterface, args []string) pe
 		return shim.Error(err.Error())
 	}
 	author := args[0]
-	query := `{"selector":{"$and":[{"$in":{"paper_author":"` + author + `"}},{"paper_status":"reviewing"}]},"sort":[{"paper_review_time":"desc"}]}`
+	query := `{"selector":{"$and":[{"paper_authors":{"$in":["` + author + `"]}},{"paper_status":"reviewing"}]},"sort":[{"paper_review_time":"desc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())

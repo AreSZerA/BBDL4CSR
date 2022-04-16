@@ -17,7 +17,7 @@ func Paper(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	uploader, title, abstract, authorsString, keywordsString := args[0], args[1], args[2], args[3], args[5]
+	uploader, title, abstract, authorsString, keywordsString := args[0], args[1], args[2], args[3], args[4]
 	var authors []string
 	err = json.Unmarshal([]byte(authorsString), &authors)
 	if err != nil {
@@ -28,7 +28,14 @@ func Paper(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	query := `{"selector":{"$and"[{"$ne":{"user_email":` + uploader + `}},{"user_is_reviewer":true}]},"sort":[{"user_reviewing":"asc"}]}`
+	result, err := utils.GetByKeys(stub, lib.ObjectTypeUser, uploader)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	if len(result) == 0 {
+		return shim.Error(lib.ErrUserNotFound.Error())
+	}
+	query := `{"selector":{"$and":[{"$ne":{"user_email":"` + uploader + `"}},{"user_is_reviewer":true}]},"sort":[{"user_reviewing":"asc"}]}`
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -44,8 +51,8 @@ func Paper(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		user.Reviewing++
 		reviewers[i] = user.Email
 		peerReview := lib.PeerReview{Paper: id, Reviewer: user.Email, Status: lib.StatusReviewing}
-		go func() { _, _ = utils.PutLedger(stub, peerReview) }()
-		go func() { _, _ = utils.PutLedger(stub, user) }()
+		_, _ = utils.PutLedger(stub, peerReview)
+		_, _ = utils.PutLedger(stub, user)
 	}
 	paper := lib.Paper{
 		ID:         id,

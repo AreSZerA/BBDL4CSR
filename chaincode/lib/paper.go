@@ -1,6 +1,10 @@
 package lib
 
-import "strconv"
+import (
+	"crypto/md5"
+	"fmt"
+	"strconv"
+)
 
 type Paper struct {
 	ID         string    `json:"paper_id"`       // MD5(Uploader + UploadTime)
@@ -20,5 +24,5 @@ func (p Paper) Type() string {
 }
 
 func (p Paper) Keys() []string {
-	return []string{p.Uploader + strconv.FormatInt(p.UploadTime, 10)}
+	return []string{fmt.Sprintf("%x", md5.Sum([]byte(p.Uploader+strconv.FormatInt(p.UploadTime, 10))))}
 }

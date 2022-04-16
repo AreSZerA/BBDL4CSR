@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "paper_upload_time"
+    ]
+  },
+  "ddoc": "paperUploadTimeIndex",
+  "name": "paper_upload_time_json_index",
+  "type": "json"
+}
