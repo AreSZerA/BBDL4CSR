@@ -1,0 +1,94 @@
+<script rel="script" src="/static/js/upload.js" type="application/javascript"></script>
+
+<div class="mdui-container mdui-p-x-5 mdui-p-t-3">
+    <div class="mdui-card">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">Upload Paper</div>
+        </div>
+        <div class="mdui-card-content mdui-p-t-0">
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Title of the paper'}">short_text</span>
+                <label class="mdui-textfield-label" for="paper-title">Title</label>
+                <input class="mdui-textfield-input" id="paper-title" type="text" required/>
+                <div class="mdui-textfield-error">Please enter title</div>
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
+                <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Abstract of the paper'}">subject</span>
+                <label class="mdui-textfield-label" for="paper-abstract">Abstract</label>
+                <textarea class="mdui-textfield-input" id="paper-abstract" type="text" required></textarea>
+                <div class="mdui-textfield-error">Please enter abstract</div>
+            </div>
+            <div class="mdui-container-fluid mdui-p-y-3" id="paper-authors">
+                <span class="mdui-icon material-icons mdui-p-r-2" mdui-tooltip="{content: 'Authors of the paper'}" style="color: rgba(0,0,0,.54)">people</span>
+                <div class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#dialog-author'}" mdui-tooltip="{content: 'Add author', delay: 1000}">
+                    <span class="mdui-icon material-icons">add</span>
+                </div>
+            </div>
+            <div class="mdui-container-fluid mdui-p-y-3" id="paper-keywords">
+                <span class="mdui-icon material-icons mdui-p-r-2" mdui-tooltip="{content: 'Keywords of the paper'}" style="color: rgba(0,0,0,.54)">label</span>
+                <div class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#dialog-keyword'}" mdui-tooltip="{content: 'Add author', delay: 1000}">
+                    <span class="mdui-icon material-icons">add</span>
+                </div>
+            </div>
+            <div class="mdui-container-fluid mdui-p-t-3">
+                <span class="mdui-icon material-icons mdui-p-r-2" mdui-tooltip="{content: 'Attach file of the paper, PDF only'}" style="color: rgba(0,0,0,.54)">attach_file</span>
+                <label for="paper-file" id="upload-file-btn">
+                    <span class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: 'Add file', delay: 1000}">
+                        <span class="mdui-icon material-icons">add</span>
+                    </span>
+                </label>
+                <input accept="application/pdf" id="paper-file" onchange="updateFilename()" style="display: none" type="file">
+                <div class="mdui-chip mdui-m-r-1" id="uploaded-file" hidden>
+                    <span class="mdui-chip-title" id="uploaded-filename"></span>
+                    <span class="mdui-chip-delete" onclick="removeFile()">
+                        <span class="mdui-icon material-icons">cancel</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-card-actions">
+            <button class="mdui-btn mdui-float-right" mdui-dialog="{target: '#dialog-upload'}">upload</button>
+        </div>
+    </div>
+</div>
+
+<div class="mdui-dialog" id="dialog-upload">
+    <div class="mdui-dialog-title">Upload Paper</div>
+    <div class="mdui-dialog-content">Are you sure upload this paper?</div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+        <button class="mdui-btn mdui-ripple" onclick="uploadPaper()">upload</button>
+    </div>
+</div>
+
+<div class="mdui-dialog" id="dialog-author">
+    <div class="mdui-dialog-title">Add Author</div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Author of the paper'}">person</span>
+            <label class="mdui-textfield-label" for="paper-author">Author</label>
+            <input class="mdui-textfield-input" id="paper-author" type="text" required/>
+            <div class="mdui-textfield-error">Please enter author</div>
+        </div>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+        <button class="mdui-btn mdui-ripple" onclick="addAuthor()">add</button>
+    </div>
+</div>
+
+<div class="mdui-dialog" id="dialog-keyword">
+    <div class="mdui-dialog-title">Add Keyword</div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Author of the paper'}">label_outline</span>
+            <label class="mdui-textfield-label" for="paper-keyword">Keyword</label>
+            <input class="mdui-textfield-input" id="paper-keyword" type="text" required/>
+            <div class="mdui-textfield-error">Please enter keyword</div>
+        </div>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+        <button class="mdui-btn mdui-ripple" onclick="addKeyword()">add</button>
+    </div>
+</div>
