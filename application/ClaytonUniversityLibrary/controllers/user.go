@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ClaytonUniversityLibrary/models"
+	"encoding/json"
 	beego "github.com/beego/beego/v2/server/web"
 	"net/http"
 )
@@ -15,16 +16,23 @@ func (c *UserLoginController) Prepare() {
 }
 
 func (c *UserLoginController) Post() {
-	email := c.GetString("email")
-	password := c.GetString("password")
+	obj := struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &obj)
+	if err != nil {
+		c.Ctx.Output.Status = http.StatusNotAcceptable
+		return
+	}
 	user := c.GetSession("user")
 	if user == nil {
-		user, err := models.FindUserByEmail(email)
+		user, err := models.FindUserByEmail(obj.Email)
 		if err != nil {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return
 		}
-		if user.Password != password {
+		if user.Password != obj.Password {
 			c.Ctx.WriteString(NewResp(false, ""))
 			return
 		}
@@ -37,7 +45,6 @@ func (c *UserLoginController) Post() {
 		return
 	}
 	c.Ctx.WriteString(NewResp(true, "you have already logged in"))
-	return
 }
 
 type UserLogoutController struct {
@@ -72,10 +79,17 @@ func (c *UserRegisterController) Prepare() {
 }
 
 func (c *UserRegisterController) Post() {
-	email := c.GetString("email")
-	username := c.GetString("username")
-	password := c.GetString("password")
-	err := models.RegisterUser(email, username, password)
+	obj := struct {
+		Email    string `json:"email"`
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &obj)
+	if err != nil {
+		c.Ctx.Output.Status = http.StatusNotAcceptable
+		return
+	}
+	err = models.RegisterUser(obj.Email, obj.Username, obj.Password)
 	if err != nil {
 		c.Ctx.WriteString(NewResp(false, err.Error()))
 		return
@@ -98,18 +112,25 @@ func (c *UserUpdateController) Post() {
 		c.Ctx.Output.Status = http.StatusUnauthorized
 		return
 	}
-	field := c.GetString("field")
+	obj := struct {
+		Field    string `json:"field"`
+		Value    string `json:"value"`
+		Password string `json:"password"`
+	}{}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &obj)
+	if err != nil {
+		c.Ctx.Output.Status = http.StatusNotAcceptable
+		return
+	}
 	user := sess.(models.User)
-	switch field {
+	switch obj.Field {
 	case "username":
-		username := c.GetString("username")
-		password := c.GetString("password")
-		if password != sess.(models.User).Password {
+		if obj.Password != sess.(models.User).Password {
 			c.Ctx.WriteString(NewResp(false, "wrong password"))
 			return
 		}
-		user.Name = username
-		err := models.UpdateUsername(user.Email, username)
+		user.Name = obj.Value
+		err := models.UpdateUsername(user.Email, user.Name)
 		if err != nil {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return
@@ -118,14 +139,12 @@ func (c *UserUpdateController) Post() {
 		c.Ctx.WriteString(NewResp(true, ""))
 		return
 	case "password":
-		oldPassword := c.GetString("oldPassword")
-		newPassword := c.GetString("newPassword")
-		if oldPassword != sess.(models.User).Password {
+		if obj.Password != sess.(models.User).Password {
 			c.Ctx.WriteString(NewResp(false, "wrong password"))
 			return
 		}
-		user.Password = newPassword
-		err := models.UpdatePassword(user.Email, newPassword)
+		user.Password = obj.Value
+		err := models.UpdatePassword(user.Email, user.Password)
 		if err != nil {
 			c.Ctx.WriteString(NewResp(false, err.Error()))
 			return

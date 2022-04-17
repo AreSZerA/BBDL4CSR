@@ -17,7 +17,10 @@ function login() {
         mdui.snackbar(`Received status ${code}: ${text}`)
     }
     if (email !== "" && password !== "") {
-        new AJAXRequest("/users/login", `email=${email}&password=${md5(password)}`, succeed, failed).post()
+        new AJAXRequest("/users/login", JSON.stringify({
+            "email": email,
+            "password": md5(password)
+        }), succeed, failed).post()
     }
 }
 
@@ -37,7 +40,7 @@ function logout() {
     let failed = (code, text) => {
         mdui.snackbar(`Received status ${code}: ${text}`)
     }
-    new AJAXRequest("/users/logout", "", succeed, failed).post()
+    new AJAXRequest("/users/logout", JSON.stringify({}), succeed, failed).post()
 }
 
 function register() {
@@ -60,7 +63,11 @@ function register() {
         mdui.snackbar(`Received status ${code}: ${text}`)
     }
     if (email !== "" && username !== "" && password !== "") {
-        new AJAXRequest("/users/register", `email=${email}&username=${username}&password=${md5(password)}`, succeed, failed).post()
+        new AJAXRequest("/users/register", JSON.stringify({
+            "email": email,
+            "username": username,
+            "password": md5(password)
+        }), succeed, failed).post()
     }
 }
 
@@ -83,7 +90,11 @@ function updateUsername() {
         mdui.snackbar(`Received status ${code}: ${text}`)
     }
     if (username !== "" && password !== "") {
-        new AJAXRequest("/users/update", `field=username&username=${username}&password=${md5(password)}`, succeed, failed).post()
+        new AJAXRequest("/users/update", JSON.stringify({
+            "field": "username",
+            "value": username,
+            "password": md5(password)
+        }), succeed, failed).post()
     }
 }
 
@@ -106,6 +117,10 @@ function updatePassword() {
         mdui.snackbar(`Received status ${code}: ${text}`)
     }
     if (oldPassword !== "" && newPassword !== "") {
-        new AJAXRequest("/users/update", `field=password&oldPassword=${md5(oldPassword)}&newPassword=${md5(newPassword)}`, succeed, failed).post()
+        new AJAXRequest("/users/update", JSON.stringify({
+            "field": "password",
+            "value": md5(newPassword),
+            "password": md5(oldPassword)
+        }), succeed, failed).post()
     }
 }
