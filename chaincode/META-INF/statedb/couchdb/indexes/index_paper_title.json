@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "paper_title"
+    ]
+  },
+  "ddoc": "paperTitleIndex",
+  "name": "paper_title_json_index",
+  "type": "json"
+}

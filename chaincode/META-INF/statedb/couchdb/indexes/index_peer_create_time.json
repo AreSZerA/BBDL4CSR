@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "peer_review_create_time"
+    ]
+  },
+  "ddoc": "peerReviewCreateTimeIndex",
+  "name": "peer_review_create_time_json_index",
+  "type": "json"
+}

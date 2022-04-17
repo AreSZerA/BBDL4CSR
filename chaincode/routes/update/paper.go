@@ -44,7 +44,7 @@ func PaperById(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	}
 	paper.Status = utils.GetStatus(statuses[0], statuses[1], statuses[2])
 	if paper.Status != lib.StatusReviewing {
-		paper.ReviewTime = final
+		paper.PublishTime = final
 	}
 	paperBytes, err = utils.PutLedger(stub, paper)
 	if err != nil {

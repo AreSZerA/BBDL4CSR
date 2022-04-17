@@ -23,9 +23,9 @@ func FindPublishedPapersByTitle(title string) ([]Paper, error) {
 	var resp channel.Response
 	var err error
 	if title == "" {
-		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapers)
+		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapersSortByPublishTime)
 	} else {
-		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByTitle, []byte(title))
+		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByTitleSortByPublishTime, []byte(title))
 	}
 	if err != nil {
 		return nil, err

@@ -144,22 +144,27 @@ func TestUpdatePeerReviewByPaperAndReviewer(t *testing.T) {
 
 func TestRetrieveUsers(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrieveUsers)
+	testQuery(t, blockchain.FuncRetrieveUsersSortByEmail)
+	testQuery(t, blockchain.FuncRetrieveUsersSortByName)
 }
 
 func TestRetrieveUsersByName(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveUsersByName, "AreSZerA")
+	testQuery(t, blockchain.FuncRetrieveUsersByNameSortByEmail, "AreSZerA")
 }
 
-func TestRetrieveUsersIsReviewer(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveUsersIsReviewer)
+func TestRetrieveReviewers(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveReviewersSortByEmail)
+	testQuery(t, blockchain.FuncRetrieveReviewersSortByName)
 }
 
-func TestRetrieveUsersIsAdmin(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveUsersIsAdmin)
+func TestRetrieveAdmins(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveAdminsSortByEmail)
+	testQuery(t, blockchain.FuncRetrieveAdminsSortByName)
 }
 
-func TestRetrieveUsersByPaperId(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveUsersByPaperId, "da253ca163027d21860425cdd773ad42")
+func TestRetrieveReviewersByPaperId(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveReviewersByPaperIdSortByEmail, "da253ca163027d21860425cdd773ad42")
+	testQuery(t, blockchain.FuncRetrieveReviewersByPaperIdSortByName, "da253ca163027d21860425cdd773ad42")
 }
 
 func TestRetrieveUserByEmail(t *testing.T) {
@@ -168,42 +173,56 @@ func TestRetrieveUserByEmail(t *testing.T) {
 
 func TestRetrievePapers(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrievePapers)
+	testQuery(t, blockchain.FuncRetrievePapersSortByTitle)
+	testQuery(t, blockchain.FuncRetrievePapersSortByUploadTime)
 }
 
 func TestRetrieveAcceptedPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapers)
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersSortByTitle)
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersSortByUploadTime)
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersSortByPublishTime)
 }
 
 func TestRetrieveRejectedPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveRejectedPapers)
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersSortByTitle)
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersSortByUploadTime)
 }
 
 func TestRetrieveReviewingPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveReviewingPapers)
+	testQuery(t, blockchain.FuncRetrieveReviewingPapersSortByTitle)
+	testQuery(t, blockchain.FuncRetrieveReviewingPapersSortByUploadTime)
 }
 
 func TestRetrieveAcceptedPapersByTitle(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByTitle, "Schizoid")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByTitleSortByTitle, "Schizoid")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByTitleSortByPublishTime, "Schizoid")
 }
 
 func TestRetrieveAcceptedPapersByAuthor(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByAuthor, "Robert Fripp")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByAuthorSortByTitle, "Robert Fripp")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByAuthorSortByPublishTime, "Robert Fripp")
 }
 
 func TestRetrieveAcceptedPapersByKeyword(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByKeyword, "Progressive")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByKeywordSortByTitle, "Progressive")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByKeywordSortByPublishTime, "Progressive")
 }
 
 func TestRetrieveAcceptedPapersByUploader(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByUploader, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByUploaderSortByTitle, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByUploaderSortByUploadTime, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByUploaderSortByPublishTime, "areszera@dl4csr.org")
 }
 
 func TestRetrieveRejectedPapersByUploader(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveRejectedPapersByUploader, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersByUploaderSortByTitle, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersByUploaderSortByUploadTime, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersByUploaderSortByPublishTime, "areszera@dl4csr.org")
 }
 
 func TestRetrieveReviewingPapersByUploader(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveReviewingPapersByUploader, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveReviewingPapersByUploaderSortByTitle, "areszera@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveReviewingPapersByUploaderSortByUploadTime, "areszera@dl4csr.org")
 }
 
 func TestRetrievePaperById(t *testing.T) {
@@ -212,5 +231,5 @@ func TestRetrievePaperById(t *testing.T) {
 }
 
 func TestRetrievePeerReviewsByReviewer(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrievePeerReviewsByReviewer, "alpha@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrievePeerReviewsByReviewerSortByCreateTime, "alpha@dl4csr.org")
 }

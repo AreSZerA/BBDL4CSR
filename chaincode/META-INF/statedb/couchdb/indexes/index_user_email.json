@@ -1,0 +1,10 @@
+{
+  "index": {
+    "fields": [
+      "user_email"
+    ]
+  },
+  "ddoc": "userEmailIndex",
+  "name": "user_email_json_index",
+  "type": "json"
+}

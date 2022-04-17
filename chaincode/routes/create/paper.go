@@ -50,7 +50,7 @@ func Paper(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		_ = json.Unmarshal(results[i], &user)
 		user.Reviewing++
 		reviewers[i] = user.Email
-		peerReview := lib.PeerReview{Paper: id, Reviewer: user.Email, Status: lib.StatusReviewing}
+		peerReview := lib.PeerReview{Paper: id, Reviewer: user.Email, CreateTime: now, Status: lib.StatusReviewing}
 		_, _ = utils.PutLedger(stub, peerReview)
 		_, _ = utils.PutLedger(stub, user)
 	}
