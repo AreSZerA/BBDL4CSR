@@ -9,10 +9,10 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
-func queryPeerReviews(stub shim.ChaincodeStubInterface, query string) peer.Response {
+func queryPeerReviews(stub shim.ChaincodeStubInterface, query string) ([]lib.PeerReview, error) {
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
-		return shim.Error(err.Error())
+		return nil, err
 	}
 	var peerReviewers []lib.PeerReview
 	for _, result := range results {
@@ -20,8 +20,7 @@ func queryPeerReviews(stub shim.ChaincodeStubInterface, query string) peer.Respo
 		_ = json.Unmarshal(result, &peerReview)
 		peerReviewers = append(peerReviewers, peerReview)
 	}
-	peerReviewersBytes, _ := json.Marshal(peerReviewers)
-	return shim.Success(peerReviewersBytes)
+	return peerReviewers, nil
 }
 
 func PeerReviewsByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -30,7 +29,17 @@ func PeerReviewsByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Re
 		return shim.Error(err.Error())
 	}
 	query := args[0]
-	return queryPeerReviews(stub, query)
+	peerReviews, err := queryPeerReviews(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var peerReviewsBytes []byte
+	if len(args) >= 3 {
+		peerReviewsBytes, _ = utils.MarshalWithOffsetAndLimit(peerReviews, args[1], args[2])
+	} else {
+		peerReviewsBytes, _ = json.Marshal(peerReviews)
+	}
+	return shim.Success(peerReviewsBytes)
 }
 
 func PeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -40,5 +49,15 @@ func PeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, arg
 	}
 	reviewer := args[0]
 	query := fmt.Sprintf(`{"selector":{"peer_review_reviewer":"%s"},"sort":[{"peer_review_create_time":"desc"}]}`, reviewer)
-	return queryPeerReviews(stub, query)
+	peerReviews, err := queryPeerReviews(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var peerReviewsBytes []byte
+	if len(args) >= 3 {
+		peerReviewsBytes, _ = utils.MarshalWithOffsetAndLimit(peerReviews, args[1], args[2])
+	} else {
+		peerReviewsBytes, _ = json.Marshal(peerReviews)
+	}
+	return shim.Success(peerReviewsBytes)
 }

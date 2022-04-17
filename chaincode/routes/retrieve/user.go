@@ -9,10 +9,10 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
-func queryUsers(stub shim.ChaincodeStubInterface, query string) peer.Response {
+func queryUsers(stub shim.ChaincodeStubInterface, query string) ([]lib.User, error) {
 	results, err := utils.GetByQuery(stub, query)
 	if err != nil {
-		return shim.Error(err.Error())
+		return nil, err
 	}
 	var users []lib.User
 	for _, result := range results {
@@ -20,8 +20,7 @@ func queryUsers(stub shim.ChaincodeStubInterface, query string) peer.Response {
 		_ = json.Unmarshal(result, &user)
 		users = append(users, user)
 	}
-	usersBytes, _ := json.Marshal(users)
-	return shim.Success(usersBytes)
+	return users, nil
 }
 
 func UsersByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -30,10 +29,20 @@ func UsersByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Response
 		return shim.Error(err.Error())
 	}
 	query := args[0]
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 3 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func Users(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+func Users(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	results, err := utils.GetAll(stub, lib.ObjectTypeUser)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -44,18 +53,43 @@ func Users(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
 		_ = json.Unmarshal(result, &user)
 		users = append(users, user)
 	}
-	usersBytes, _ := json.Marshal(users)
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
 	return shim.Success(usersBytes)
 }
 
-func UsersSortByEmail(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"sort":[{"user_email":"asc"}]"}`
-	return queryUsers(stub, query)
+func UsersSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	query := `{"selector":{},"sort":[{"user_email":"asc"}]}`
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func UsersSortByName(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
-	query := `{"sort":[{"user_name":"asc"}]"}`
-	return queryUsers(stub, query)
+func UsersSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	query := `{"selector":{},"sort":[{"user_name":"asc"}]}`
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
 func UsersByNameSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -65,17 +99,47 @@ func UsersByNameSortByEmail(stub shim.ChaincodeStubInterface, args []string) pee
 	}
 	name := args[0]
 	query := fmt.Sprintf(`{"selector":{"user_name":"%s"},"sort":[{"user_email":"asc"}]}`, name)
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 3 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func ReviewersSortByEmail(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+func ReviewersSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	query := `{"selector":{"user_is_reviewer":true},"sort":[{"user_email":"asc"}]}`
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func ReviewersSortByName(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+func ReviewersSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	query := `{"selector":{"user_is_reviewer":true},"sort":[{"user_name":"asc"}]}`
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
 func ReviewersByPaperIdSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -103,7 +167,17 @@ func ReviewersByPaperIdSortByEmail(stub shim.ChaincodeStubInterface, args []stri
 			query += `"]}},"sort":[{"user_email":"asc"}]}`
 		}
 	}
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 3 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
 func ReviewersByPaperIdSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -131,17 +205,47 @@ func ReviewersByPaperIdSortByName(stub shim.ChaincodeStubInterface, args []strin
 			query += `"]}},"sort":[{"user_name":"asc"}]}`
 		}
 	}
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 3 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func AdminsSortByEmail(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+func AdminsSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	query := `{"selector":{"user_is_admin":true},"sort":[{"user_email":"asc"}]}`
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
-func AdminsSortByName(stub shim.ChaincodeStubInterface, _ []string) peer.Response {
+func AdminsSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	query := `{"selector":{"user_is_admin":true},"sort":[{"user_name":"asc"}]}`
-	return queryUsers(stub, query)
+	users, err := queryUsers(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	var usersBytes []byte
+	if len(args) >= 2 {
+		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
+	} else {
+		usersBytes, _ = json.Marshal(users)
+	}
+	return shim.Success(usersBytes)
 }
 
 func UserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -153,9 +257,6 @@ func UserByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Response 
 	userBytes, err := utils.GetByKeys(stub, lib.ObjectTypeUser, email)
 	if err != nil {
 		return shim.Error(err.Error())
-	}
-	if len(userBytes) == 0 {
-		return shim.Error(lib.ErrUserNotFound.Error())
 	}
 	return shim.Success(userBytes)
 }
