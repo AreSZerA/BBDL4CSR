@@ -170,6 +170,18 @@ func TestRetrievePapers(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrievePapers)
 }
 
+func TestRetrieveAcceptedPapers(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapers)
+}
+
+func TestRetrieveRejectedPapers(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveRejectedPapers)
+}
+
+func TestRetrieveReviewingPapers(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveReviewingPapers)
+}
+
 func TestRetrieveAcceptedPapersByTitle(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByTitle, "Schizoid")
 }
@@ -182,24 +194,16 @@ func TestRetrieveAcceptedPapersByKeyword(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByKeyword, "Progressive")
 }
 
-func TestRetrieveAcceptedPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveAcceptedPapers)
+func TestRetrieveAcceptedPapersByUploader(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveAcceptedPapersByUploader, "areszera@dl4csr.org")
 }
 
-func TestRejectedPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveRejectedPapers)
+func TestRetrieveRejectedPapersByUploader(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveRejectedPapersByUploader, "areszera@dl4csr.org")
 }
 
-func TestRejectedPapersByAuthor(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveRejectedPapersByAuthor, "AreSZerA")
-}
-
-func TestRetrieveReviewingPapers(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveReviewingPapers)
-}
-
-func TestRetrieveReviewingPapersByAuthor(t *testing.T) {
-	testQuery(t, blockchain.FuncRetrieveReviewingPapersByAuthor, "Robert Fripp")
+func TestRetrieveReviewingPapersByUploader(t *testing.T) {
+	testQuery(t, blockchain.FuncRetrieveReviewingPapersByUploader, "areszera@dl4csr.org")
 }
 
 func TestRetrievePaperById(t *testing.T) {
