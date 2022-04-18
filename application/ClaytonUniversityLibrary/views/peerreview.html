@@ -12,23 +12,85 @@
                     <tr>
                         <th>#</th>
                         <th>Create time</th>
-                        <th>Status</th>
-                        <th>Comment</th>
-                        <th>Review Time</th>
                         <th class="mdui-table-col-numeric"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {{- range $pr := .peerReviews -}}
+                    {{- range $pr := .reviewingPeerReviews -}}
                         <tr>
                             <td>{{- $pr.Count -}}</td>
                             <td>{{- $pr.CreateTime -}}</td>
-                            <td>{{- $pr.Status -}}</td>
-                            <td class="mdui-text-truncate" style="max-width: 200px">{{- $pr.Comment -}}</td>
-                            <td>{{- $pr.Time -}}</td>
                             <td>
                                 <a class="mdui-btn" href="/static/papers/{{- $pr.Paper -}}.pdf" target="_blank">read</a>
-                                <button class="mdui-btn" mdui-dialog="{target: '#dialog-peer-review'}" onclick="setPaperId('{{- $pr.Paper -}}')" {{ if ne $pr.Status "reviewing" -}}disabled{{- end -}}>peer review</button>
+                                <button class="mdui-btn" mdui-dialog="{target: '#dialog-peer-review'}" onclick="setPaperId('{{- $pr.Paper -}}')">peer review</button>
+                            </td>
+                        </tr>
+                    {{- end -}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mdui-card mdui-m-t-3">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">Accepted Papers</div>
+        </div>
+        <div class="mdui-card-content">
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Create time</th>
+                        <th>Review Time</th>
+                        <th>Comment</th>
+                        <th class="mdui-table-col-numeric"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{- range $pr := .acceptedPeerReviews -}}
+                        <tr>
+                            <td>{{- $pr.Count -}}</td>
+                            <td>{{- $pr.CreateTime -}}</td>
+                            <td>{{- $pr.Time -}}</td>
+                            <td class="mdui-text-truncate" style="max-width: 200px">{{- $pr.Comment -}}</td>
+                            <td>
+                                <a class="mdui-btn" href="/static/papers/{{- $pr.Paper -}}.pdf" target="_blank">read</a>
+                            </td>
+                        </tr>
+                    {{- end -}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mdui-card mdui-m-t-3">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">Rejected Papers</div>
+        </div>
+        <div class="mdui-card-content">
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Create time</th>
+                        <th>Review Time</th>
+                        <th>Comment</th>
+                        <th class="mdui-table-col-numeric"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{- range $pr := .rejectedPeerReviews -}}
+                        <tr>
+                            <td>{{- $pr.Count -}}</td>
+                            <td>{{- $pr.CreateTime -}}</td>
+                            <td>{{- $pr.Time -}}</td>
+                            <td class="mdui-text-truncate" style="max-width: 200px">{{- $pr.Comment -}}</td>
+                            <td>
+                                <a class="mdui-btn" href="/static/papers/{{- $pr.Paper -}}.pdf" target="_blank">read</a>
                             </td>
                         </tr>
                     {{- end -}}
@@ -62,4 +124,5 @@
         <button class="mdui-btn" mdui-dialog-cancel>cancel</button>
         <button class="mdui-btn" onclick="peerReview()">ok</button>
     </div>
+
 </div>

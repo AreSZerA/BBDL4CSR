@@ -21,7 +21,17 @@ func (c *PeerReviewController) Get() {
 		c.Abort("403")
 		return
 	}
-	peerReviews, err := models.FindPeerReviewsByReviewer(user.(models.User).Email)
+	reviewingPeerReviews, err := models.FindReviewingPeerReviewsByReviewer(user.(models.User).Email)
+	if err != nil {
+		c.Abort("500")
+		return
+	}
+	acceptedPeerReviews, err := models.FindAcceptedPeerReviewsByReviewer(user.(models.User).Email)
+	if err != nil {
+		c.Abort("500")
+		return
+	}
+	rejectedPeerReviews, err := models.FindRejectedPeerReviewsByReviewer(user.(models.User).Email)
 	if err != nil {
 		c.Abort("500")
 		return
@@ -31,7 +41,9 @@ func (c *PeerReviewController) Get() {
 	c.TplName = "peerreview.html"
 	c.Data["isReviewer"] = user.(models.User).IsReviewer
 	c.Data["isAdmin"] = user.(models.User).IsAdmin
-	c.Data["peerReviews"] = peerReviews
+	c.Data["reviewingPeerReviews"] = reviewingPeerReviews
+	c.Data["acceptedPeerReviews"] = acceptedPeerReviews
+	c.Data["rejectedPeerReviews"] = rejectedPeerReviews
 }
 
 func (c *PeerReviewController) Post() {

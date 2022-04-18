@@ -232,4 +232,7 @@ func TestRetrievePaperById(t *testing.T) {
 
 func TestRetrievePeerReviewsByReviewer(t *testing.T) {
 	testQuery(t, blockchain.FuncRetrievePeerReviewsByReviewerSortByCreateTime, "alpha@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveAcceptedPeerReviewsByReviewerSortByCreateTime, "alpha@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveRejectedPeerReviewsByReviewerSortByCreateTime, "alpha@dl4csr.org")
+	testQuery(t, blockchain.FuncRetrieveReviewingPeerReviewsByReviewerSortByCreateTime, "alpha@dl4csr.org")
 }

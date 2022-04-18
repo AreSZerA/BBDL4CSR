@@ -57,3 +57,57 @@ func PeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, arg
 	}
 	return shim.Success(peerReviewsBytes)
 }
+
+func AcceptedPeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	err := utils.CheckArgs(args, 1)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	reviewer := args[0]
+	query := fmt.Sprintf(`{"selector":{"peer_review_reviewer":"%s","peer_review_status":"accepted"},"sort":[{"peer_review_create_time":"desc"}]}`, reviewer)
+	peerReviews, err := queryPeerReviews(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	peerReviewsBytes, err := utils.MarshalByArgs(peerReviews, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(peerReviewsBytes)
+}
+
+func RejectedPeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	err := utils.CheckArgs(args, 1)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	reviewer := args[0]
+	query := fmt.Sprintf(`{"selector":{"peer_review_reviewer":"%s","peer_review_status":"rejected"},"sort":[{"peer_review_create_time":"desc"}]}`, reviewer)
+	peerReviews, err := queryPeerReviews(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	peerReviewsBytes, err := utils.MarshalByArgs(peerReviews, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(peerReviewsBytes)
+}
+
+func ReviewingPeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	err := utils.CheckArgs(args, 1)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	reviewer := args[0]
+	query := fmt.Sprintf(`{"selector":{"peer_review_reviewer":"%s","peer_review_status":"reviewing"},"sort":[{"peer_review_create_time":"desc"}]}`, reviewer)
+	peerReviews, err := queryPeerReviews(stub, query)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	peerReviewsBytes, err := utils.MarshalByArgs(peerReviews, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(peerReviewsBytes)
+}

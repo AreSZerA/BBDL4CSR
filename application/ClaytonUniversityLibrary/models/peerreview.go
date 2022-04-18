@@ -50,8 +50,42 @@ func UpdatePeerReview(paperId string, email string, status string, comment strin
 	return nil
 }
 
-func FindPeerReviewsByReviewer(email string) ([]PeerReview, error) {
-	resp, err := blockchain.Query(blockchain.FuncRetrievePeerReviewsByReviewerSortByCreateTime, []byte(email))
+func FindReviewingPeerReviewsByReviewer(email string) ([]PeerReview, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveReviewingPeerReviewsByReviewerSortByCreateTime, []byte(email))
+	if err != nil {
+		return nil, err
+	}
+	var jpr []jsonPeerReview
+	err = json.Unmarshal(resp.Payload, &jpr)
+	if err != nil {
+		return nil, err
+	}
+	var peerReviews []PeerReview
+	for i, pr := range jpr {
+		peerReviews = append(peerReviews, pr.convert(i+1))
+	}
+	return peerReviews, nil
+}
+
+func FindAcceptedPeerReviewsByReviewer(email string) ([]PeerReview, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPeerReviewsByReviewerSortByCreateTime, []byte(email))
+	if err != nil {
+		return nil, err
+	}
+	var jpr []jsonPeerReview
+	err = json.Unmarshal(resp.Payload, &jpr)
+	if err != nil {
+		return nil, err
+	}
+	var peerReviews []PeerReview
+	for i, pr := range jpr {
+		peerReviews = append(peerReviews, pr.convert(i+1))
+	}
+	return peerReviews, nil
+}
+
+func FindRejectedPeerReviewsByReviewer(email string) ([]PeerReview, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveRejectedPeerReviewsByReviewerSortByCreateTime, []byte(email))
 	if err != nil {
 		return nil, err
 	}

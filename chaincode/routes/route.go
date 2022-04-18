@@ -81,8 +81,11 @@ var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveReviewingPapersByUploaderSortByUploadTime": retrieve.ReviewingPapersByUploaderSortByUploadTime,
 	"RetrievePaperById":                                 retrieve.PaperById,
 	// Retrieve peer review
-	"RetrievePeerReviewsByQuery":                    retrieve.PeerReviewsByQuery,
-	"RetrievePeerReviewsByReviewerSortByCreateTime": retrieve.PeerReviewsByReviewerSortByCreateTime,
+	"RetrievePeerReviewsByQuery":                             retrieve.PeerReviewsByQuery,
+	"RetrievePeerReviewsByReviewerSortByCreateTime":          retrieve.PeerReviewsByReviewerSortByCreateTime,
+	"RetrieveAcceptedPeerReviewsByReviewerSortByCreateTime":  retrieve.AcceptedPeerReviewsByReviewerSortByCreateTime,
+	"RetrieveRejectedPeerReviewsByReviewerSortByCreateTime":  retrieve.RejectedPeerReviewsByReviewerSortByCreateTime,
+	"RetrieveReviewingPeerReviewsByReviewerSortByCreateTime": retrieve.ReviewingPeerReviewsByReviewerSortByCreateTime,
 
 	// Delete
 }
