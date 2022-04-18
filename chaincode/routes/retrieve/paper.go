@@ -33,11 +33,9 @@ func PapersByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Respons
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -53,11 +51,9 @@ func Papers(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		_ = json.Unmarshal(result, &paper)
 		papers = append(papers, paper)
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -68,11 +64,9 @@ func PapersSortByTitle(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -83,11 +77,9 @@ func PapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []string) pee
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -98,11 +90,9 @@ func AcceptedPapersSortByTitle(stub shim.ChaincodeStubInterface, args []string) 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -113,11 +103,9 @@ func AcceptedPapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []str
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -128,11 +116,9 @@ func AcceptedPapersSortByPublishTime(stub shim.ChaincodeStubInterface, args []st
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -143,11 +129,9 @@ func RejectedPapersSortByTitle(stub shim.ChaincodeStubInterface, args []string) 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -158,11 +142,9 @@ func RejectedPapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []str
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -173,11 +155,9 @@ func ReviewingPapersSortByTitle(stub shim.ChaincodeStubInterface, args []string)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -188,11 +168,9 @@ func ReviewingPapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []st
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 2 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[0], args[1])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -208,11 +186,9 @@ func AcceptedPapersByTitleSortByTitle(stub shim.ChaincodeStubInterface, args []s
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -228,11 +204,9 @@ func AcceptedPapersByTitleSortByPublishTime(stub shim.ChaincodeStubInterface, ar
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -248,11 +222,9 @@ func AcceptedPapersByAuthorSortByTitle(stub shim.ChaincodeStubInterface, args []
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -268,11 +240,9 @@ func AcceptedPapersByAuthorSortByPublishTime(stub shim.ChaincodeStubInterface, a
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -288,11 +258,9 @@ func AcceptedPapersByKeywordSortByTitle(stub shim.ChaincodeStubInterface, args [
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -308,11 +276,9 @@ func AcceptedPapersByKeywordSortByPublishTime(stub shim.ChaincodeStubInterface, 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -328,11 +294,9 @@ func AcceptedPapersByUploaderSortByTitle(stub shim.ChaincodeStubInterface, args 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -348,11 +312,9 @@ func AcceptedPapersByUploaderSortByUploadTime(stub shim.ChaincodeStubInterface, 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -368,11 +330,9 @@ func AcceptedPapersByUploaderSortByPublishTime(stub shim.ChaincodeStubInterface,
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -388,11 +348,9 @@ func RejectedPapersByUploaderSortByTitle(stub shim.ChaincodeStubInterface, args 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -408,11 +366,9 @@ func RejectedPapersByUploaderSortByUploadTime(stub shim.ChaincodeStubInterface, 
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -428,11 +384,9 @@ func RejectedPapersByUploaderSortByPublishTime(stub shim.ChaincodeStubInterface,
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -448,11 +402,9 @@ func ReviewingPapersByUploaderSortByTitle(stub shim.ChaincodeStubInterface, args
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }
@@ -468,11 +420,9 @@ func ReviewingPapersByUploaderSortByUploadTime(stub shim.ChaincodeStubInterface,
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var papersBytes []byte
-	if len(args) >= 3 {
-		papersBytes, _ = utils.MarshalWithOffsetAndLimit(papers, args[1], args[2])
-	} else {
-		papersBytes, _ = json.Marshal(papers)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(papersBytes)
 }

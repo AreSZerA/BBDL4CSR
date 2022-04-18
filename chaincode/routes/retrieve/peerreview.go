@@ -33,11 +33,9 @@ func PeerReviewsByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Re
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var peerReviewsBytes []byte
-	if len(args) >= 3 {
-		peerReviewsBytes, _ = utils.MarshalWithOffsetAndLimit(peerReviews, args[1], args[2])
-	} else {
-		peerReviewsBytes, _ = json.Marshal(peerReviews)
+	peerReviewsBytes, err := utils.MarshalByArgs(peerReviews, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(peerReviewsBytes)
 }
@@ -53,11 +51,9 @@ func PeerReviewsByReviewerSortByCreateTime(stub shim.ChaincodeStubInterface, arg
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var peerReviewsBytes []byte
-	if len(args) >= 3 {
-		peerReviewsBytes, _ = utils.MarshalWithOffsetAndLimit(peerReviews, args[1], args[2])
-	} else {
-		peerReviewsBytes, _ = json.Marshal(peerReviews)
+	peerReviewsBytes, err := utils.MarshalByArgs(peerReviews, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(peerReviewsBytes)
 }

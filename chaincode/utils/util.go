@@ -29,55 +29,125 @@ func GetStatus(s1 string, s2 string, s3 string) string {
 	}
 }
 
-func MarshalWithOffsetAndLimit(slice interface{}, offsetString string, limitString string) ([]byte, error) {
-	var objectsBytes []byte
-	offset, err := strconv.Atoi(offsetString)
-	if err != nil {
-		return nil, lib.ErrOffsetNotInteger
-	}
-	if offset < 0 {
-		offset = 0
-	}
-	limit, err := strconv.Atoi(limitString)
-	if err != nil {
-		return nil, lib.ErrLimitNotInteger
-	}
-	if limit < 0 {
-		limit = 0
-	}
+func MarshalByArgs(slice interface{}, args []string) ([]byte, error) {
+	var result []byte
 	switch slice.(type) {
 	case []lib.User:
-		if offset > len(slice.([]lib.User)) {
-			objectsBytes = []byte("[]")
-		} else {
-			if offset+limit > len(slice.([]lib.User)) {
-				objectsBytes, _ = json.Marshal(slice.([]lib.User)[offset:])
+		if len(args) == 0 {
+			result, _ = json.Marshal(slice.([]lib.User))
+		} else if len(args) == 1 {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.User))))
 			} else {
-				objectsBytes, _ = json.Marshal(slice.([]lib.User)[offset : offset+limit])
+				result, _ = json.Marshal(slice.([]lib.User))
+			}
+		} else {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.User))))
+			} else {
+				offset, err := strconv.Atoi(args[0])
+				if err != nil {
+					return nil, lib.ErrOffsetNotInteger
+				}
+				if offset < 0 {
+					offset = 0
+				}
+				limit, err := strconv.Atoi(args[1])
+				if err != nil {
+					return nil, lib.ErrLimitNotInteger
+				}
+				if limit < 0 {
+					limit = 0
+				}
+				if offset > len(slice.([]lib.User)) {
+					result = []byte("[]")
+				} else {
+					if offset+limit > len(slice.([]lib.User)) {
+						result, _ = json.Marshal(slice.([]lib.User)[offset:])
+					} else {
+						result, _ = json.Marshal(slice.([]lib.User)[offset : offset+limit])
+					}
+				}
 			}
 		}
 	case []lib.Paper:
-		if offset > len(slice.([]lib.Paper)) {
-			objectsBytes = []byte("[]")
-		} else {
-			if offset+limit > len(slice.([]lib.Paper)) {
-				objectsBytes, _ = json.Marshal(slice.([]lib.Paper)[offset:])
+		if len(args) == 0 {
+			result, _ = json.Marshal(slice.([]lib.Paper))
+		} else if len(args) == 1 {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.Paper))))
 			} else {
-				objectsBytes, _ = json.Marshal(slice.([]lib.Paper)[offset : offset+limit])
+				result, _ = json.Marshal(slice.([]lib.Paper))
+			}
+		} else {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.Paper))))
+			} else {
+				offset, err := strconv.Atoi(args[0])
+				if err != nil {
+					return nil, lib.ErrOffsetNotInteger
+				}
+				if offset < 0 {
+					offset = 0
+				}
+				limit, err := strconv.Atoi(args[1])
+				if err != nil {
+					return nil, lib.ErrLimitNotInteger
+				}
+				if limit < 0 {
+					limit = 0
+				}
+				if offset > len(slice.([]lib.Paper)) {
+					result = []byte("[]")
+				} else {
+					if offset+limit > len(slice.([]lib.Paper)) {
+						result, _ = json.Marshal(slice.([]lib.Paper)[offset:])
+					} else {
+						result, _ = json.Marshal(slice.([]lib.Paper)[offset : offset+limit])
+					}
+				}
 			}
 		}
 	case []lib.PeerReview:
-		if offset > len(slice.([]lib.PeerReview)) {
-			objectsBytes = []byte("[]")
-		} else {
-			if offset+limit > len(slice.([]lib.PeerReview)) {
-				objectsBytes, _ = json.Marshal(slice.([]lib.PeerReview)[offset:])
+		if len(args) == 0 {
+			result, _ = json.Marshal(slice.([]lib.PeerReview))
+		} else if len(args) == 1 {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.PeerReview))))
 			} else {
-				objectsBytes, _ = json.Marshal(slice.([]lib.PeerReview)[offset : offset+limit])
+				result, _ = json.Marshal(slice.([]lib.PeerReview))
+			}
+		} else {
+			if args[0] == "count" {
+				result = []byte(strconv.Itoa(len(slice.([]lib.PeerReview))))
+			} else {
+				offset, err := strconv.Atoi(args[0])
+				if err != nil {
+					return nil, lib.ErrOffsetNotInteger
+				}
+				if offset < 0 {
+					offset = 0
+				}
+				limit, err := strconv.Atoi(args[1])
+				if err != nil {
+					return nil, lib.ErrLimitNotInteger
+				}
+				if limit < 0 {
+					limit = 0
+				}
+				if offset > len(slice.([]lib.PeerReview)) {
+					result = []byte("[]")
+				} else {
+					if offset+limit > len(slice.([]lib.PeerReview)) {
+						result, _ = json.Marshal(slice.([]lib.PeerReview)[offset:])
+					} else {
+						result, _ = json.Marshal(slice.([]lib.PeerReview)[offset : offset+limit])
+					}
+				}
 			}
 		}
 	default:
 		return nil, lib.ErrNotBlockchainObjectSlice
 	}
-	return objectsBytes, nil
+	return result, nil
 }

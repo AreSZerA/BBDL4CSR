@@ -33,11 +33,9 @@ func UsersByQuery(stub shim.ChaincodeStubInterface, args []string) peer.Response
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 3 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -53,11 +51,9 @@ func Users(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 		_ = json.Unmarshal(result, &user)
 		users = append(users, user)
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -68,11 +64,9 @@ func UsersSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -83,11 +77,9 @@ func UsersSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Respo
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -103,11 +95,9 @@ func UsersByNameSortByEmail(stub shim.ChaincodeStubInterface, args []string) pee
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 3 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -118,11 +108,9 @@ func ReviewersSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -133,11 +121,9 @@ func ReviewersSortByName(stub shim.ChaincodeStubInterface, args []string) peer.R
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -171,11 +157,9 @@ func ReviewersByPaperIdSortByEmail(stub shim.ChaincodeStubInterface, args []stri
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 3 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -209,11 +193,9 @@ func ReviewersByPaperIdSortByName(stub shim.ChaincodeStubInterface, args []strin
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 3 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[1], args[2])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args[1:])
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -224,11 +206,9 @@ func AdminsSortByEmail(stub shim.ChaincodeStubInterface, args []string) peer.Res
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
@@ -239,11 +219,9 @@ func AdminsSortByName(stub shim.ChaincodeStubInterface, args []string) peer.Resp
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	var usersBytes []byte
-	if len(args) >= 2 {
-		usersBytes, _ = utils.MarshalWithOffsetAndLimit(users, args[0], args[1])
-	} else {
-		usersBytes, _ = json.Marshal(users)
+	usersBytes, err := utils.MarshalByArgs(users, args)
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 	return shim.Success(usersBytes)
 }
