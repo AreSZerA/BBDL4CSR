@@ -16,8 +16,8 @@ func (c *UploadPaperController) Get() {
 		return
 	}
 	c.Data["isLogin"] = true
-	c.Layout = "layout.gohtml"
-	c.TplName = "upload.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "upload.html"
 	c.Data["isReviewer"] = user.(models.User).IsReviewer
 	c.Data["username"] = user.(models.User).Name
 }

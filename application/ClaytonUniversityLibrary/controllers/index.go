@@ -10,8 +10,8 @@ type IndexController struct {
 }
 
 func (c *IndexController) Get() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "index.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "index.html"
 	user := c.GetSession("user")
 	c.Data["isLogin"] = user != nil
 	if user != nil {

@@ -19,36 +19,36 @@ func (c *ErrorController) Prepare() {
 }
 
 func (c *ErrorController) Error401() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "error.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "error.html"
 	c.Data["statusCode"] = 401
 	c.Data["info"] = "Unauthorized"
 }
 
 func (c *ErrorController) Error403() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "error.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "error.html"
 	c.Data["statusCode"] = 403
 	c.Data["info"] = "Forbidden"
 }
 
 func (c *ErrorController) Error404() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "error.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "error.html"
 	c.Data["statusCode"] = 404
 	c.Data["info"] = "Not Found"
 }
 
 func (c *ErrorController) Error500() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "error.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "error.html"
 	c.Data["statusCode"] = 500
 	c.Data["info"] = "Internal Server Error"
 }
 
 func (c *ErrorController) Error503() {
-	c.Layout = "layout.gohtml"
-	c.TplName = "error.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "error.html"
 	c.Data["statusCode"] = 503
 	c.Data["info"] = "Service Unavailable"
 }

@@ -27,8 +27,8 @@ func (c *PapersController) Get() {
 		c.Abort("500")
 		return
 	}
-	c.Layout = "layout.gohtml"
-	c.TplName = "papers.gohtml"
+	c.Layout = "layout.html"
+	c.TplName = "papers.html"
 	user := c.GetSession("user")
 	c.Data["isLogin"] = user != nil
 	if user != nil {
