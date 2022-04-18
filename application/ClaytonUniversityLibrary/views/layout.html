@@ -7,8 +7,8 @@
     <meta content="width=device-width,initial-scale=1" name="viewport">
     <title>Clayton University Library</title>
     {{/* Import remotely */}}
-    {{/* <link href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" rel="stylesheet" type="text/css"/>*/}}
-    {{/* <script rel="script" src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js" type="application/javascript"></script>*/}}
+    {{/* <link href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css" rel="stylesheet" type="text/css"/> */}}
+    {{/* <script rel="script" src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js" type="application/javascript"></script> */}}
     {{/* Import locally */}}
     <link href="/static/mdui/css/mdui.min.css" rel="stylesheet" type="text/css">
     <script rel="script" src="/static/mdui/js/mdui.min.js" type="application/javascript"></script>
@@ -21,50 +21,68 @@
 
 <div class="mdui-drawer mdui-drawer-close mdui-shadow-3" id="drawer">
     <ul class="mdui-list">
-        <a class="mdui-list-item mdui-ripple" href="/">
-            <span class="mdui-list-item-icon mdui-icon material-icons">home</span>
-            <span class="mdui-list-item-content">Home Page</span>
-        </a>
-        <li class="mdui-subheader">Papers</li>
-        <a class="mdui-list-item mdui-ripple" href="/papers">
-            <span class="mdui-list-item-icon mdui-icon material-icons">library_books</span>
-            <span class="mdui-list-item-content">Latest Papers</span>
-        </a>
-        {{- if .isLogin -}}
-            <a class="mdui-list-item mdui-ripple" href="/papers/upload">
-                <span class="mdui-list-item-icon mdui-icon material-icons">file_upload</span>
-                <span class="mdui-list-item-content">Upload Paper</span>
+        <li>
+            <a class="mdui-list-item mdui-ripple" href="/">
+                <span class="mdui-list-item-icon mdui-icon material-icons">home</span>
+                <span class="mdui-list-item-content">Home Page</span>
             </a>
-            {{- if .isReviewer -}}
-                <a class="mdui-list-item mdui-ripple">
-                    <span class="mdui-list-item-icon mdui-icon material-icons">rate_review</span>
-                    <span class="mdui-list-item-content">Peer Review</span>
+        </li>
+        <li class="mdui-subheader">Papers</li>
+        <li>
+            <a class="mdui-list-item mdui-ripple" href="/papers">
+                <span class="mdui-list-item-icon mdui-icon material-icons">library_books</span>
+                <span class="mdui-list-item-content">Latest Papers</span>
+            </a>
+        </li>
+        {{- if .isLogin -}}
+            <li>
+                <a class="mdui-list-item mdui-ripple" href="/papers/upload">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">file_upload</span>
+                    <span class="mdui-list-item-content">Upload Paper</span>
                 </a>
+            </li>
+            {{- if .isReviewer -}}
+                <li>
+                    <a class="mdui-list-item mdui-ripple" href="/peer_review">
+                        <span class="mdui-list-item-icon mdui-icon material-icons">rate_review</span>
+                        <span class="mdui-list-item-content">Peer Review</span>
+                    </a>
+                </li>
             {{- end -}}
         {{- end -}}
         <li class="mdui-subheader">User</li>
         {{- if .isLogin -}}
-            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-username'}">
-                <span class="mdui-list-item-icon mdui-icon material-icons">assignment_ind</span>
-                <span class="mdui-list-item-content">Update Username</span>
-            </a>
-            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-password'}">
-                <span class="mdui-list-item-icon mdui-icon material-icons">vpn_key</span>
-                <span class="mdui-list-item-content">Update Password</span>
-            </a>
-            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-logout'}">
-                <span class="mdui-list-item-icon mdui-icon material-icons">person_outline</span>
-                <span class="mdui-list-item-content">Logout</span>
-            </a>
+            <li>
+                <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-username'}">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">assignment_ind</span>
+                    <span class="mdui-list-item-content">Update Username</span>
+                </a>
+            </li>
+            <li>
+                <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-password'}">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">vpn_key</span>
+                    <span class="mdui-list-item-content">Update Password</span>
+                </a>
+            </li>
+            <li>
+                <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-logout'}">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">person_outline</span>
+                    <span class="mdui-list-item-content">Logout</span>
+                </a>
+            </li>
         {{- else -}}
-            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-login'}">
-                <span class="mdui-list-item-icon mdui-icon material-icons">person</span>
-                <span class="mdui-list-item-content">Login</span>
-            </a>
-            <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-register'}">
-                <span class="mdui-list-item-icon mdui-icon material-icons">person_add</span>
-                <span class="mdui-list-item-content">Register</span>
-            </a>
+            <li>
+                <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-login'}">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">person</span>
+                    <span class="mdui-list-item-content">Login</span>
+                </a>
+            </li>
+            <li>
+                <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-register'}">
+                    <span class="mdui-list-item-icon mdui-icon material-icons">person_add</span>
+                    <span class="mdui-list-item-content">Register</span>
+                </a>
+            </li>
         {{- end -}}
     </ul>
 </div>
@@ -104,13 +122,13 @@
             <div class="mdui-textfield mdui-textfield-floating-label">
                 <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
                 <label class="mdui-textfield-label" for="update-username-username">New Username</label>
-                <input class="mdui-textfield-input" id="update-username-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
+                <input class="mdui-textfield-input" id="update-username-username" maxlength="16" min="2" pattern="^\w{2,16}$" required type="text"/>
                 <div class="mdui-textfield-error">Illegal username format</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
                 <span class="mdui-icon material-icons">security</span>
                 <label class="mdui-textfield-label" for="update-username-password">Password</label>
-                <input class="mdui-textfield-input" id="update-username-password" type="password" required/>
+                <input class="mdui-textfield-input" id="update-username-password" required type="password"/>
                 <div class="mdui-textfield-error">Please enter password</div>
             </div>
         </div>
@@ -126,13 +144,13 @@
             <div class="mdui-textfield mdui-textfield-floating-label">
                 <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
                 <label class="mdui-textfield-label" for="update-password-new">New password</label>
-                <input class="mdui-textfield-input" id="update-password-new" maxlength="16" minlength="8" type="password" pattern="^\S{8,16}$" required/>
+                <input class="mdui-textfield-input" id="update-password-new" maxlength="16" minlength="8" pattern="^\S{8,16}$" required type="password"/>
                 <div class="mdui-textfield-error">Invalid password format</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
                 <span class="mdui-icon material-icons">security</span>
                 <label class="mdui-textfield-label" for="update-password-old">Old password</label>
-                <input class="mdui-textfield-input" id="update-password-old" type="password" required/>
+                <input class="mdui-textfield-input" id="update-password-old" required type="password"/>
                 <div class="mdui-textfield-error">Please enter password</div>
             </div>
         </div>
@@ -163,7 +181,7 @@
             <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
                 <span class="mdui-icon material-icons">vpn_key</span>
                 <label class="mdui-textfield-label" for="login-password">Password</label>
-                <input class="mdui-textfield-input" id="login-password" type="password" required/>
+                <input class="mdui-textfield-input" id="login-password" required type="password"/>
                 <div class="mdui-textfield-error">Please enter password</div>
             </div>
         </div>
@@ -179,19 +197,19 @@
             <div class="mdui-textfield mdui-textfield-floating-label">
                 <span class="mdui-icon material-icons" mdui-tooltip="{content: 'E.g. claytonuniversity@dl4csr.org'}">email</span>
                 <label class="mdui-textfield-label" for="register-email">Email</label>
-                <input class="mdui-textfield-input" id="register-email" type="email" required/>
+                <input class="mdui-textfield-input" id="register-email" required type="email"/>
                 <div class="mdui-textfield-error">Illegal email format</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
                 <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of letters, letters, and underline, longer than 2 and shorter than 16'}">person</span>
                 <label class="mdui-textfield-label" for="register-username">Username</label>
-                <input class="mdui-textfield-input" id="register-username" maxlength="16" min="2" type="text" pattern="^\w{2,16}$" required/>
+                <input class="mdui-textfield-input" id="register-username" maxlength="16" min="2" pattern="^\w{2,16}$" required type="text"/>
                 <div class="mdui-textfield-error">Illegal username format</div>
             </div>
             <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-0">
                 <span class="mdui-icon material-icons" mdui-tooltip="{content: 'Consists of nonempty characters, longer than 2 and shorter than 16'}">vpn_key</span>
                 <label class="mdui-textfield-label" for="register-password">Password</label>
-                <input class="mdui-textfield-input" id="register-password" maxlength="16" minlength="8" type="password" pattern="^\S{8,16}$" required/>
+                <input class="mdui-textfield-input" id="register-password" maxlength="16" minlength="8" pattern="^\S{8,16}$" required type="password"/>
                 <div class="mdui-textfield-error">Illegal password format</div>
             </div>
         </div>
