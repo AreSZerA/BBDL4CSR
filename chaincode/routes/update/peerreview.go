@@ -35,7 +35,59 @@ func PeerReviewByPaperAndReviewer(stub shim.ChaincodeStubInterface, args []strin
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	_ = UserByEmail(stub, []string{reviewer})
-	_ = PaperById(stub, []string{paperId})
+
+	userBytes, err := utils.GetByKeys(stub, lib.ObjectTypeUser, reviewer)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	if len(userBytes) == 0 {
+		return shim.Error(lib.ErrUserNotFound.Error())
+	}
+	var user lib.User
+	_ = json.Unmarshal(userBytes, &user)
+	user.Reviewing--
+	_, err = utils.PutLedger(stub, user)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	paperBytes, err := utils.GetByKeys(stub, lib.ObjectTypePaper, paperId)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	if len(paperBytes) == 0 {
+		return shim.Error(lib.ErrPaperNotFound.Error())
+	}
+	var paper lib.Paper
+	_ = json.Unmarshal(paperBytes, &paper)
+	var statuses = []string{status}
+	var final int64
+	for _, r := range paper.Reviewers {
+		if r != reviewer {
+			var pr lib.PeerReview
+			res, err := utils.GetByKeys(stub, lib.ObjectTypePeerReview, paperId, r)
+			if err != nil {
+				return shim.Error(err.Error())
+			}
+			if len(res) == 0 {
+				shim.Error(lib.ErrDataHasLost.Error())
+			} else {
+				_ = json.Unmarshal(res, &pr)
+				if final < pr.Time {
+					final = pr.Time
+				}
+			}
+			statuses = append(statuses, pr.Status)
+		}
+	}
+	paper.Status = utils.GetStatus(statuses[0], statuses[1], statuses[2])
+	if paper.Status != lib.StatusReviewing {
+		paper.PublishTime = final
+	}
+	paperBytes, err = utils.PutLedger(stub, paper)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
 	return shim.Success(peerReviewBytes)
 }

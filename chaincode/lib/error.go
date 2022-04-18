@@ -13,4 +13,5 @@ var (
 	ErrLimitNotInteger          = errors.New("limit is not integer")
 	ErrOffsetNotInteger         = errors.New("offset is not integer")
 	ErrNotBlockchainObjectSlice = errors.New("not blockchain object slice")
+	ErrDataHasLost              = errors.New("data has lost")
 )
