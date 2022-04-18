@@ -1,9 +1,68 @@
 package models
 
+import (
+	"ClaytonUniversityLibrary/blockchain"
+	"encoding/json"
+	"time"
+)
+
+type jsonPeerReview struct {
+	Paper      string `json:"peer_review_paper"`
+	Reviewer   string `json:"peer_review_reviewer"`
+	CreateTime int64  `json:"peer_review_create_time"`
+	Status     string `json:"peer_review_status"`
+	Comment    string `json:"peer_review_comment,omitempty"`
+	Time       int64  `json:"peer_review_time,omitempty"`
+}
+
+func (pr jsonPeerReview) convert(i int) PeerReview {
+	createTime := time.UnixMicro(pr.CreateTime / 1000).Format("2006-02-01 15:04:05")
+	reviewTime := ""
+	if pr.Time != 0 {
+		reviewTime = time.UnixMicro(pr.Time / 1000).Format("2006-02-01 15:04:05")
+	}
+	return PeerReview{
+		Count:      i,
+		Paper:      pr.Paper,
+		Reviewer:   pr.Reviewer,
+		CreateTime: createTime,
+		Status:     pr.Status,
+		Comment:    pr.Comment,
+		Time:       reviewTime,
+	}
+}
+
 type PeerReview struct {
-	Paper    string `json:"peer_review_paper"`
-	Reviewer string `json:"peer_review_reviewer"`
-	Status   string `json:"peer_review_status"`
-	Comment  string `json:"peer_review_comment,omitempty"`
-	Time     int64  `json:"peer_review_time,omitempty"`
+	Count      int
+	Paper      string
+	Reviewer   string
+	CreateTime string
+	Status     string
+	Comment    string
+	Time       string
+}
+
+func UpdatePeerReview(paperId string, email string, status string, comment string) error {
+	_, err := blockchain.Execute(blockchain.FuncUpdatePeerReviewByPaperAndReviewer, []byte(paperId), []byte(email), []byte(status), []byte(comment))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func FindPeerReviewsByReviewer(email string) ([]PeerReview, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrievePeerReviewsByReviewerSortByCreateTime, []byte(email))
+	if err != nil {
+		return nil, err
+	}
+	var jpr []jsonPeerReview
+	err = json.Unmarshal(resp.Payload, &jpr)
+	if err != nil {
+		return nil, err
+	}
+	var peerReviews []PeerReview
+	for i, pr := range jpr {
+		peerReviews = append(peerReviews, pr.convert(i+1))
+	}
+	return peerReviews, nil
 }

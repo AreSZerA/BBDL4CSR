@@ -14,6 +14,7 @@ func (c *ErrorController) Prepare() {
 	c.Data["isLogin"] = user != nil
 	if user != nil {
 		c.Data["isReviewer"] = user.(models.User).IsReviewer
+		c.Data["isAdmin"] = user.(models.User).IsAdmin
 		c.Data["username"] = user.(models.User).Name
 	}
 }

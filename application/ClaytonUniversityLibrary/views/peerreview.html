@@ -1,0 +1,65 @@
+<script rel="script" src="/static/js/peerreview.js" type="application/javascript"></script>
+
+<div class="mdui-container">
+    <div class="mdui-card mdui-m-t-3">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">Peer Review List</div>
+        </div>
+        <div class="mdui-card-content">
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Create time</th>
+                        <th>Status</th>
+                        <th>Comment</th>
+                        <th>Review Time</th>
+                        <th class="mdui-table-col-numeric"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{- range $pr := .peerReviews -}}
+                        <tr>
+                            <td>{{- $pr.Count -}}</td>
+                            <td>{{- $pr.CreateTime -}}</td>
+                            <td>{{- $pr.Status -}}</td>
+                            <td class="mdui-text-truncate" style="max-width: 200px">{{- $pr.Comment -}}</td>
+                            <td>{{- $pr.Time -}}</td>
+                            <td>
+                                <a class="mdui-btn" href="/static/papers/{{- $pr.Paper -}}.pdf" target="_blank">read</a>
+                                <button class="mdui-btn" mdui-dialog="{target: '#dialog-peer-review'}" onclick="setPaperId('{{- $pr.Paper -}}')" {{ if ne $pr.Status "reviewing" -}}disabled{{- end -}}>peer review</button>
+                            </td>
+                        </tr>
+                    {{- end -}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mdui-dialog" id="dialog-peer-review">
+    <div class="mdui-dialog-title">Peer Review</div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <span class="mdui-icon material-icons">comment</span>
+            <label class="mdui-textfield-label" for="peer-review-comment">Comment</label>
+            <input class="mdui-textfield-input" id="peer-review-comment" maxlength="200"/>
+        </div>
+        <form class="mdui-container">
+            <label class="mdui-radio mdui-m-r-3">
+                <input name="paper-status" type="radio" value="accepted" checked/>
+                <span class="mdui-radio-icon"></span>Accept
+            </label>
+            <label class="mdui-radio">
+                <input name="paper-status" type="radio" value="rejected"/>
+                <span class="mdui-radio-icon"></span>Reject
+            </label>
+        </form>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn" mdui-dialog-cancel>cancel</button>
+        <button class="mdui-btn" onclick="peerReview()">ok</button>
+    </div>
+</div>

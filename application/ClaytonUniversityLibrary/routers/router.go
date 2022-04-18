@@ -8,12 +8,12 @@ import (
 func init() {
 	beego.ErrorController(&controllers.ErrorController{})
 	beego.Router("/", &controllers.IndexController{})
-	//beego.Router("/admin", &controllers.AdminController{})
+	beego.Router("/admin", &controllers.AdminController{})
 	beego.Router("/users/login", &controllers.UserLoginController{})
 	beego.Router("/users/logout", &controllers.UserLogoutController{})
 	beego.Router("/users/register", &controllers.UserRegisterController{})
 	beego.Router("/users/update", &controllers.UserUpdateController{})
 	beego.Router("/papers", &controllers.PapersController{})
 	beego.Router("/papers/upload", &controllers.UploadPaperController{})
-	//beego.Router("/papers/peerreview", &controllers.PeerReviewController{})
+	beego.Router("/papers/peer_review", &controllers.PeerReviewController{})
 }

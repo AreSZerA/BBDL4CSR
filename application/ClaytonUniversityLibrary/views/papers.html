@@ -1,5 +1,9 @@
 <div class="mdui-container-fluid">
-    <div class="mdui-card">
-        <div class="mdui-card-primary-title">Not implemented</div>
+    {{- range $paper := .papers -}}
+    <div class="mdui-card mdui-m-t-2">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">{{- $paper.Title -}}</div>
+        </div>
     </div>
+    {{- end -}}
 </div>

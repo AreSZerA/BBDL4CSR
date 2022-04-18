@@ -43,7 +43,7 @@
             </li>
             {{- if .isReviewer -}}
                 <li>
-                    <a class="mdui-list-item mdui-ripple" href="/peer_review">
+                    <a class="mdui-list-item mdui-ripple" href="/papers/peer_review">
                         <span class="mdui-list-item-icon mdui-icon material-icons">rate_review</span>
                         <span class="mdui-list-item-content">Peer Review</span>
                     </a>
@@ -52,6 +52,14 @@
         {{- end -}}
         <li class="mdui-subheader">User</li>
         {{- if .isLogin -}}
+            {{- if .isAdmin -}}
+                <li>
+                    <a class="mdui-list-item mdui-ripple" href="/admin">
+                        <span class="mdui-list-item-icon mdui-icon material-icons">people</span>
+                        <span class="mdui-list-item-content">Manage Users</span>
+                    </a>
+                </li>
+            {{- end -}}
             <li>
                 <a class="mdui-list-item mdui-ripple" mdui-dialog="{target: '#dialog-update-username'}">
                     <span class="mdui-list-item-icon mdui-icon material-icons">assignment_ind</span>

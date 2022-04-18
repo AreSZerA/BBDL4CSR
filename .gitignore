@@ -3,3 +3,4 @@ application/ClaytonUniversityLibrary/static/mdui/
 application/ClaytonUniversityLibrary/lastupdate.tmp
 deploy/channel-artifacts/
 deploy/crypto-config/
+*.pdf

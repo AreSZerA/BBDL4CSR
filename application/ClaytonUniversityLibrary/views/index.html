@@ -19,6 +19,9 @@
         <div class="mdui-card-actions">
             {{- if .isLogin -}}
                 <a class="mdui-btn" href="/papers/upload" mdui-dialog="{target: '#dialog-update'}">upload paper</a>
+                {{- if .isReviewer -}}
+                    <a class="mdui-btn" href="/papers/peer_review">peer review</a>
+                {{- end -}}
             {{- else -}}
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-login'}">login now</button>
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-register'}">register now</button>
