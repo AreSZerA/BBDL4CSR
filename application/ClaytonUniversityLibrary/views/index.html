@@ -22,6 +22,9 @@
                 {{- if .isReviewer -}}
                     <a class="mdui-btn" href="/papers/peer_review">peer review</a>
                 {{- end -}}
+                {{- if .isAdmin -}}
+                    <a class="mdui-btn" href="/admin">manage users</a>
+                {{- end -}}
             {{- else -}}
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-login'}">login now</button>
                 <button class="mdui-btn" mdui-dialog="{target: '#dialog-register'}">register now</button>

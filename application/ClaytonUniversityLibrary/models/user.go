@@ -31,6 +31,19 @@ func FindUserByEmail(email string) (User, error) {
 	return user, nil
 }
 
+func FindUsers() ([]User, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveUsersSortByName)
+	if err != nil {
+		return nil, err
+	}
+	var users []User
+	err = json.Unmarshal(resp.Payload, &users)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func RegisterUser(email string, username string, passwd string) error {
 	_, err := blockchain.Execute(blockchain.FuncCreateUser, []byte(email), []byte(username), []byte(passwd))
 	if err != nil {
@@ -49,6 +62,14 @@ func UpdateUsername(email string, username string) error {
 
 func UpdatePassword(email string, password string) error {
 	_, err := blockchain.Execute(blockchain.FuncUpdateUserPassword, []byte(email), []byte(password))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateUserIsReviewer(email string) error {
+	_, err := blockchain.Execute(blockchain.FuncUpdateUserIsReviewer, []byte(email))
 	if err != nil {
 		return err
 	}

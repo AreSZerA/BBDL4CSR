@@ -1,37 +1,61 @@
+<script rel="script" src="/static/js/admin.js" type="application/javascript"></script>
+
 <div class="mdui-container mdui-p-x-5">
     <div class="mdui-card mdui-m-t-3">
         <div class="mdui-card-primary">
             <div class="mdui-card-primary-title">Users</div>
         </div>
         <div class="mdui-card-content">
-            <div class="mdui-textfield mdui-textfield-expandable mdui-p-b-2">
-                <button class="mdui-textfield-icon mdui-btn mdui-btn-icon">
-                    <span class="mdui-icon material-icons">search</span>
-                </button>
-                <label for="search_user"></label>
-                <input class="mdui-textfield-input" id="search_user" placeholder="Filter by..." type="text" />
-                <button class="mdui-textfield-close mdui-btn mdui-btn-icon">
-                    <span class="mdui-icon material-icons">close</span>
-                </button>
-            </div>
             <div class="mdui-table-fluid">
                 <table class="mdui-table mdui-table-hoverable">
                     <thead>
                     <tr>
-                        <th>Email</th>
                         <th>Username</th>
+                        <th>Email</th>
                         <th>Is reviewer</th>
                         <th>Is admin</th>
                         <th class="mdui-table-col-numeric">Reviewing</th>
+                        <th class="mdui-table-col-numeric"></th>
                     </tr>
                     </thead>
                     <tbody>
+                    {{- range $user := .users -}}
+                        <tr>
+                            <td>{{- $user.Name -}}</td>
+                            <td>{{- $user.Email -}}</td>
+                            <td>
+                                <span class="mdui-icon material-icons">{{- if $user.IsReviewer -}}check{{- else -}}close{{- end -}}</span>
+                            </td>
+                            <td>
+                                <span class="mdui-icon material-icons">{{- if $user.IsAdmin -}}check{{- else -}}close{{- end -}}</span>
+                            </td>
+                            <td>{{- $user.Reviewing -}}</td>
+                            <td>
+                                <button class="mdui-btn" onclick="setReviewer('{{- $user.Email -}}')" mdui-dialog="{target: '#dialog-grant'}" {{ if $user.IsReviewer }}disabled{{ end }}>grant</button>
+                            </td>
+                        </tr>
+                    {{- end -}}
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="mdui-card-actions">
-            <button class="mdui-btn mdui-float-right">next page</button>
         </div>
+    </div>
+</div>
+
+<div class="mdui-dialog" id="dialog-grant">
+    <div class="mdui-dialog-title">Grant Reviewer Privilege</div>
+    <div class="mdui-dialog-content">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <span class="mdui-icon material-icons">security</span>
+            <label class="mdui-textfield-label" for="grant-password">Password</label>
+            <input class="mdui-textfield-input" id="grant-password" required type="password"/>
+            <div class="mdui-textfield-error">Please enter password</div>
+        </div>
+    </div>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-cancel>cancel</button>
+        <button class="mdui-btn mdui-ripple" onclick="grantReviewer()">grant</button>
     </div>
 </div>
