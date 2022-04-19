@@ -1,8 +1,22 @@
-<div class="mdui-container-fluid">
+<div class="mdui-container">
     {{- range $paper := .papers -}}
     <div class="mdui-card mdui-m-t-2">
+        <div class="mdui-card-header">
+            <div class="mdui-card-header-avatar mdui-chip-icon" style="background-color: #40c4ff">{{- $paper.FirstChar -}}</div>
+            <div class="mdui-card-header-title">{{- $paper.Authors -}}</div>
+            <div class="mdui-card-header-subtitle">{{- $paper.PublishTime -}}</div>
+        </div>
         <div class="mdui-card-primary">
             <div class="mdui-card-primary-title">{{- $paper.Title -}}</div>
+            <div class="mdui-card-primary-subtitle">Keywords:
+                {{- range $k := $paper.Keywords -}}
+                    &ensp;<a class="mdui-text-color-theme-text" href="/papers?k={{- $k -}}">{{- $k -}}</a>
+                {{- end -}}
+            </div>
+        </div>
+        <div class="mdui-card-content">{{- $paper.Abstract -}}</div>
+        <div class="mdui-card-actions">
+            <a class="mdui-btn mdui-float-right" href="/static/papers/{{- $paper.ID -}}.pdf" target="_blank">read</a>
         </div>
     </div>
     {{- end -}}

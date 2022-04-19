@@ -124,3 +124,10 @@ function updatePassword() {
         }), succeed, failed).post()
     }
 }
+
+function search() {
+    let keyword = document.getElementById("search-keyword").value
+    if (keyword !== "") {
+        window.location.href = `/papers?t=${keyword}`
+    }
+}
