@@ -61,7 +61,6 @@ func PeerReviewByPaperAndReviewer(stub shim.ChaincodeStubInterface, args []strin
 	var paper lib.Paper
 	_ = json.Unmarshal(paperBytes, &paper)
 	var statuses = []string{status}
-	var final int64
 	for _, r := range paper.Reviewers {
 		if r != reviewer {
 			var pr lib.PeerReview
@@ -73,18 +72,15 @@ func PeerReviewByPaperAndReviewer(stub shim.ChaincodeStubInterface, args []strin
 				shim.Error(lib.ErrDataHasLost.Error())
 			} else {
 				_ = json.Unmarshal(res, &pr)
-				if final < pr.Time {
-					final = pr.Time
-				}
 			}
 			statuses = append(statuses, pr.Status)
 		}
 	}
 	paper.Status = utils.GetStatus(statuses[0], statuses[1], statuses[2])
 	if paper.Status != lib.StatusReviewing {
-		paper.PublishTime = final
+		paper.PublishTime = now
 	}
-	paperBytes, err = utils.PutLedger(stub, paper)
+	_, err = utils.PutLedger(stub, paper)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

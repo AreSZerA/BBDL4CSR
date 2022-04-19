@@ -98,7 +98,7 @@ func AcceptedPapersSortByTitle(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 func AcceptedPapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	query := `{"selector":{"paper_status":"accepted"},"sort":[{"paper_upload_time":"asc"}]}`
+	query := `{"selector":{"paper_status":"accepted"},"sort":[{"paper_upload_time":"desc"}]}`
 	papers, err := queryPapers(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -111,7 +111,7 @@ func AcceptedPapersSortByUploadTime(stub shim.ChaincodeStubInterface, args []str
 }
 
 func AcceptedPapersSortByPublishTime(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	query := `{"selector":{"paper_status":"accepted"},"sort":[{"paper_publish_time":"asc"}]}`
+	query := `{"selector":{"paper_status":"accepted"},"sort":[{"paper_publish_time":"desc"}]}`
 	papers, err := queryPapers(stub, query)
 	if err != nil {
 		return shim.Error(err.Error())
