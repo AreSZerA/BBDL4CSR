@@ -5,36 +5,53 @@ let authors = []
 let keywords = []
 
 function uploadPaper() {
+    let content = document.getElementById("upload-content")
+    let spinner = document.getElementById("upload-spinner")
     let title = document.getElementById("paper-title").value
     let abstract = document.getElementById("paper-abstract").value
     let file = document.getElementById("paper-file").files[0]
-    if (title === "" || abstract === "" || file === undefined) {
-        mdui.snackbar('Empty argument')
-        return
-    }
-    let formData = new FormData()
-    formData.append("title", title)
-    formData.append("abstract", abstract)
-    formData.append("authors", JSON.stringify(authors))
-    formData.append("keywords", JSON.stringify(keywords))
-    formData.append("file", file)
-    let succeed = (resp) => {
-        let respObj = JSON.parse(resp)
-        if (respObj.result === true) {
-            alert("succeed!")
-            setTimeout(() => window.location.reload(), 1000)
-        } else {
-            if (respObj.error === "" || respObj.error === undefined) {
-                mdui.snackbar(`Failed to upload paper`)
+    if (title === "") {
+        mdui.snackbar('Please enter title')
+    } else if (abstract === "") {
+        mdui.snackbar("Please enter abstract")
+    } else if (file === undefined) {
+        mdui.snackbar("Please select the paper file")
+    } else if (authors.length === 0) {
+        mdui.snackbar("Please add at least one author")
+    } else if (keywords.length === 0) {
+        mdui.snackbar("Please add at least one keyword")
+    } else {
+        content.hidden = true
+        spinner.hidden = false
+        let formData = new FormData()
+        formData.append("title", title)
+        formData.append("abstract", abstract)
+        formData.append("authors", JSON.stringify(authors))
+        formData.append("keywords", JSON.stringify(keywords))
+        formData.append("file", file)
+        let succeed = (resp) => {
+            let respObj = JSON.parse(resp)
+            if (respObj.result === true) {
+                content.hidden = false
+                spinner.hidden = true
+                mdui.snackbar("Paper has been uploaded successfully")
             } else {
-                mdui.snackbar(`Failed to upload paper: ${respObj.error}`)
+                content.hidden = false
+                spinner.hidden = true
+                if (respObj.error === "" || respObj.error === undefined) {
+                    mdui.snackbar(`Failed to upload paper`)
+                } else {
+                    mdui.snackbar(`Failed to upload paper: ${respObj.error}`)
+                }
             }
         }
+        let failed = (code, text) => {
+            content.hidden = false
+            spinner.hidden = true
+            mdui.snackbar(`Received status ${code}: ${text}`)
+        }
+        new AJAXRequest("/papers", undefined, formData, succeed, failed).post()
     }
-    let failed = (code, text) => {
-        mdui.snackbar(`Received status ${code}: ${text}`)
-    }
-    new AJAXRequest("/papers", undefined, formData, succeed, failed).post()
 }
 
 function addAuthor() {

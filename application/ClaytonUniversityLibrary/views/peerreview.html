@@ -103,7 +103,10 @@
 
 <div class="mdui-dialog" id="dialog-peer-review">
     <div class="mdui-dialog-title">Peer Review</div>
-    <div class="mdui-dialog-content">
+    <div class="mdui-dialog-content" hidden id="peer-review-spinner">
+        <div class="mdui-spinner mdui-spinner-colorful mdui-center" style="top: 50%;"></div>
+    </div>
+    <div class="mdui-dialog-content" id="peer-review-content">
         <div class="mdui-textfield mdui-textfield-floating-label">
             <span class="mdui-icon material-icons">comment</span>
             <label class="mdui-textfield-label" for="peer-review-comment">Comment</label>
