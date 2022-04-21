@@ -6,7 +6,8 @@ import (
 )
 
 func init() {
-	//initUsers(1000)
+	// Call initUsers(n) to insert n users.
+	//initUsers(10000)
 }
 
 func BenchmarkRetrieveUsers(b *testing.B) {
