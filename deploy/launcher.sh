@@ -63,6 +63,8 @@ function deploy_network() {
 function start_network() {
   print_step "Start network"
   docker-compose start
+  echo "Sleep 10 seconds for network to complete initialization..."
+  sleep 10
 }
 
 function stop_network() {
