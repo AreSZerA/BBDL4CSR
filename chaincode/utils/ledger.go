@@ -76,26 +76,3 @@ func GetByQuery(stub shim.ChaincodeStubInterface, query string) ([][]byte, error
 	}
 	return results, nil
 }
-
-func GetByQueryPaging(stub shim.ChaincodeStubInterface, query string, limit int32, offset int32) ([][]byte, error) {
-	var results [][]byte
-	var bookmark string
-	_, metadata, err := stub.GetQueryResultWithPagination(query, offset, bookmark)
-	if err != nil {
-		return nil, err
-	}
-	bookmark = metadata.GetBookmark()
-	itr, _, err := stub.GetQueryResultWithPagination(query, limit, bookmark)
-	if err != nil {
-		return nil, err
-	}
-	defer itr.Close()
-	for itr.HasNext() {
-		result, err := itr.Next()
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, result.GetValue())
-	}
-	return results, nil
-}
