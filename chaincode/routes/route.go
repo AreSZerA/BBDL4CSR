@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the function map for routing.
+
 package routes
 
 import (
@@ -8,14 +11,17 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
+// FuncNames is a slice stores all the available function names.
 var FuncNames []string
 
 func init() {
+	// traverse the keys of FuncMap and append to FuncNames
 	for key := range FuncMap {
 		FuncNames = append(FuncNames, key)
 	}
 }
 
+// FuncMap maps function name in string to actual functions for invocation.
 var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Response{
 	"ping": func(shim.ChaincodeStubInterface, []string) peer.Response { return shim.Success([]byte("pong")) },
 
@@ -23,6 +29,7 @@ var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"CreateUser":     create.User,
 	"CreateReviewer": create.Reviewer,
 	"CreateAdmin":    create.Admin,
+
 	// Create paper
 	"CreatePaper": create.Paper,
 
@@ -34,9 +41,10 @@ var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"UpdateUserIsNotReviewer": update.UserIsNotReviewer,
 	"UpdateUserIsAdmin":       update.UserIsAdmin,
 	"UpdateUserIsNotAdmin":    update.UserIsNotAdmin,
-	"UpdateUserReviewing":     update.UserReviewing,
+
 	// Update paper
 	"UpdatePaperById": update.PaperById,
+
 	// Update peer review
 	"UpdatePeerReviewByPaperAndReviewer": update.PeerReviewByPaperAndReviewer,
 
@@ -53,6 +61,7 @@ var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveAdminsSortByEmail":             retrieve.AdminsSortByEmail,
 	"RetrieveAdminsSortByName":              retrieve.AdminsSortByName,
 	"RetrieveUserByEmail":                   retrieve.UserByEmail,
+
 	// Retrieve paper
 	"RetrievePapersByQuery":                             retrieve.PapersByQuery,
 	"RetrievePapers":                                    retrieve.Papers,
@@ -80,6 +89,7 @@ var FuncMap = map[string]func(shim.ChaincodeStubInterface, []string) peer.Respon
 	"RetrieveReviewingPapersByUploaderSortByTitle":      retrieve.ReviewingPapersByUploaderSortByTitle,
 	"RetrieveReviewingPapersByUploaderSortByUploadTime": retrieve.ReviewingPapersByUploaderSortByUploadTime,
 	"RetrievePaperById":                                 retrieve.PaperById,
+
 	// Retrieve peer review
 	"RetrievePeerReviewsByQuery":                             retrieve.PeerReviewsByQuery,
 	"RetrievePeerReviewsByReviewerSortByCreateTime":          retrieve.PeerReviewsByReviewerSortByCreateTime,

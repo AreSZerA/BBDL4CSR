@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines errors for package route to use.
+
 package lib
 
 import "errors"
@@ -14,4 +17,5 @@ var (
 	ErrOffsetNotInteger         = errors.New("offset is not integer")
 	ErrNotBlockchainObjectSlice = errors.New("not blockchain object slice")
 	ErrDataHasLost              = errors.New("data has lost")
+	ErrPeerReviewDone           = errors.New("peer review is done")
 )
