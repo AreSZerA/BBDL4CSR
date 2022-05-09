@@ -1,6 +1,12 @@
 # DL4CSR Benchmark
 
-### Modified File
+The following retrieving methods are tested:
+
+- retrieve by composite key
+- retrieve by query
+- retrieve by query and regular expression
+
+## Modified File
 
 `${GOPATH}/pkg/mod/github.com/hyperledger/fabric-sdk-go@v1.0.0/internal/github.com/hyperledger/fabric/core/operations/system.go`
 has been modified. In line 225, modify `go s.statsd.SendLoop(context.Background(), s.sendTicker.C, network, address)`

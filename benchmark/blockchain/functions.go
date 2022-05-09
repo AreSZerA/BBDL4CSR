@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines constants of function names.
+
 package blockchain
 
 const (
