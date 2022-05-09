@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines functions the paper DAO and functions to update and query.
+
 package models
 
 import (

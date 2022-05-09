@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file configures the routes of the web application.
+
 package routers
 
 import (

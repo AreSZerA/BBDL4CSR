@@ -15,7 +15,3 @@ The project consists of three directories:
 - [`deploy`](https://github.com/AreSZerA/BBDL4CSR/tree/master/deploy): Network deployment configurations and launcher.
 
 Read `README.md` documents on the directories to learn how to deploy and use the digital library.
-
----
-
-<div style="text-align: center; font-size: 88%;">&copy; 2022 AreSZerA</div>

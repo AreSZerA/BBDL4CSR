@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines constants of function names.
+
 package blockchain
 
 const (
@@ -15,7 +18,6 @@ const (
 	FuncUpdateUserIsNotReviewer            = "UpdateUserIsNotReviewer"
 	FuncUpdateUserIsAdmin                  = "UpdateUserIsAdmin"
 	FuncUpdateUserIsNotAdmin               = "UpdateUserIsNotAdmin"
-	FuncUpdateUserReviewing                = "UpdateUserReviewing"
 	FuncUpdatePaperById                    = "UpdatePaperById"
 	FuncUpdatePeerReviewByPaperAndReviewer = "UpdatePeerReviewByPaperAndReviewer"
 

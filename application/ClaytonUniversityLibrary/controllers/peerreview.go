@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the PeerReviewController for route "/papers/peer_review".
+
 package controllers
 
 import (
@@ -12,15 +15,18 @@ type PeerReviewController struct {
 }
 
 func (c *PeerReviewController) Get() {
+	// check login status
 	user := c.GetSession("user")
 	if user == nil {
 		c.Abort("401")
 		return
 	}
+	// check identity
 	if !user.(models.User).IsReviewer {
 		c.Abort("403")
 		return
 	}
+	// find three peer review information in three types of status
 	reviewingPeerReviews, err := models.FindReviewingPeerReviewsByReviewer(user.(models.User).Email)
 	if err != nil {
 		c.Abort("500")
@@ -36,6 +42,7 @@ func (c *PeerReviewController) Get() {
 		c.Abort("500")
 		return
 	}
+	// pass values and render
 	c.Data["isLogin"] = true
 	c.Layout = "layout.html"
 	c.TplName = "peerreview.html"
@@ -47,11 +54,13 @@ func (c *PeerReviewController) Get() {
 }
 
 func (c *PeerReviewController) Post() {
+	// check login status
 	user := c.GetSession("user")
 	if user == nil {
 		c.Ctx.Output.SetStatus(http.StatusUnauthorized)
 		return
 	}
+	// check identity
 	if !user.(models.User).IsReviewer {
 		c.Ctx.Output.SetStatus(http.StatusForbidden)
 		return
@@ -61,16 +70,20 @@ func (c *PeerReviewController) Post() {
 		Status  string `json:"status"`
 		Comment string `json:"comment"`
 	}{}
-	email := user.(models.User).Email
+	// parse parameters from request body
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &obj)
 	if err != nil {
 		c.Ctx.Output.SetStatus(http.StatusNotAcceptable)
 		return
 	}
+	email := user.(models.User).Email
+	// update peer review information
 	err = models.UpdatePeerReview(obj.Id, email, obj.Status, obj.Comment)
 	if err != nil {
+		// response {"result":false,"error":"#{err}"}
 		c.Ctx.WriteString(NewResp(false, err.Error()))
 		return
 	}
+	// response {"result":true}
 	c.Ctx.WriteString(NewResp(true, ""))
 }

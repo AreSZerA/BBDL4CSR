@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file initializes Fabric SDK and provide functions to interact with blockchain.
+
 package blockchain
 
 import (
@@ -8,10 +11,10 @@ import (
 )
 
 const (
-	channelName   = "claytonuniversitychannel"
+	channelName   = "garytonuniversitychannel"
 	chaincodeName = "dl4csr"
-	orgName       = "clayton-university.dl4csr.org"
-	peerName      = "peer0.clayton-university.dl4csr.org"
+	orgName       = "garyton-university.dl4csr.org"
+	peerName      = "peer1.garyton-university.dl4csr.org"
 	userName      = "Admin"
 	configFile    = "conf/sdk.yaml"
 )
@@ -20,13 +23,14 @@ var sdk *fabsdk.FabricSDK
 
 func init() {
 	var err error
+	// load config file to initialize Fabric SDK
 	sdk, err = fabsdk.New(config.FromFile(configFile))
 	if err != nil {
 		log.Panicf("Failed to initialise SDK: %s", err.Error())
 	}
 }
 
-// Execute for updating
+// Execute invokes function to update the ledger, changes will be saved but takes longer time.
 func Execute(functionName string, args ...[]byte) (channel.Response, error) {
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithOrg(orgName), fabsdk.WithUser(userName))
 	cli, err := channel.New(ctx)
@@ -41,7 +45,7 @@ func Execute(functionName string, args ...[]byte) (channel.Response, error) {
 	return resp, nil
 }
 
-// Query for retrieving only
+// Query invokes function to query in ledger, changes will not be saved.
 func Query(functionName string, args ...[]byte) (channel.Response, error) {
 	ctx := sdk.ChannelContext(channelName, fabsdk.WithOrg(orgName), fabsdk.WithUser(userName))
 	cli, err := channel.New(ctx)

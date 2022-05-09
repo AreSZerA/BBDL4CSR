@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the PapersController for route "/papers".
+
 package controllers
 
 import (
@@ -9,6 +12,7 @@ import (
 )
 
 func init() {
+	// create a directory to place uploaded papers
 	err := os.MkdirAll("static/papers/", os.ModePerm)
 	if err != nil {
 		fmt.Println("Failed to create dir:", err.Error())
@@ -21,7 +25,9 @@ type PapersController struct {
 }
 
 func (c *PapersController) Get() {
+	// parse parameter
 	title := c.GetString("t")
+	// find published papers according to the parameter
 	papers, err := models.FindPublishedPapersByTitle(title)
 	if err != nil {
 		c.Abort("500")
@@ -40,32 +46,38 @@ func (c *PapersController) Get() {
 }
 
 func (c *PapersController) Post() {
+	// check login status
 	sess := c.GetSession("user")
 	if sess == nil {
 		c.Ctx.Output.Status = http.StatusUnauthorized
 		return
 	}
+	// parse parameters
 	c.Ctx.Output.Header("Content-Type", "application/json")
 	user := sess.(models.User)
 	title := c.GetString("title")
 	abstract := c.GetString("abstract")
 	authors := c.GetString("authors")
 	keywords := c.GetString("keywords")
-	paper, err := models.UploadPaper(user.Email, title, abstract, authors, keywords)
-	if err != nil {
-		c.Ctx.WriteString(NewResp(false, err.Error()))
-		return
-	}
+	// read file from
 	f, _, err := c.GetFile("file")
 	if err != nil {
 		c.Ctx.Output.Status = http.StatusInternalServerError
 		return
 	}
 	defer f.Close()
+	// put paper to the ledger
+	paper, err := models.UploadPaper(user.Email, title, abstract, authors, keywords)
+	if err != nil {
+		c.Ctx.WriteString(NewResp(false, err.Error()))
+		return
+	}
+	// if the updated successfully, save the file from memory
 	err = c.SaveToFile("file", "static/papers/"+paper.ID+".pdf")
 	if err != nil {
 		c.Ctx.Output.Status = http.StatusInternalServerError
 		return
 	}
+	// response {"result":true}
 	c.Ctx.WriteString(NewResp(true, ""))
 }

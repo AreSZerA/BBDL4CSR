@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the IndexController for route "/".
+
 package controllers
 
 import (

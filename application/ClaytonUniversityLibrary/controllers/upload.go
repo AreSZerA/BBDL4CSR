@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the UploadPaperController for route "/papers/upload".
+
 package controllers
 
 import (
@@ -10,6 +13,7 @@ type UploadPaperController struct {
 }
 
 func (c *UploadPaperController) Get() {
+	// check login status
 	user := c.GetSession("user")
 	if user == nil {
 		c.Abort("401")

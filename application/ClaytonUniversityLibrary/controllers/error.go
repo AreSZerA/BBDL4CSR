@@ -1,3 +1,6 @@
+// Copyright 2022 AreSZerA. All rights reserved.
+// This file defines the ErrorController for 401, 403, 404, 500, 503.
+
 package controllers
 
 import (
