@@ -31,7 +31,10 @@
                             </td>
                             <td>{{- $user.Reviewing -}}</td>
                             <td>
-                                <button class="mdui-btn" onclick="setReviewer('{{- $user.Email -}}')" mdui-dialog="{target: '#dialog-grant'}" {{ if $user.IsReviewer }}disabled{{ end }}>grant</button>
+                                <button class="mdui-btn" onclick="setReviewer('{{- $user.Email -}}')"
+                                        mdui-dialog="{target: '#dialog-grant'}"
+                                        {{ if $user.IsReviewer }}disabled{{ end }}>grant
+                                </button>
                             </td>
                         </tr>
                     {{- end -}}

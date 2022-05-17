@@ -6,7 +6,6 @@ package models
 import (
 	"ClaytonUniversityLibrary/blockchain"
 	"encoding/json"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"strconv"
 	"time"
 )
@@ -60,21 +59,65 @@ type Paper struct {
 }
 
 func CountPublishedPapers() (int, error) {
-	n, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersSortByPublishTime)
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersSortByPublishTime, []byte("count"))
 	if err != nil {
 		return 0, err
 	}
-	return strconv.Atoi(string(n.Payload))
+	return strconv.Atoi(string(resp.Payload))
+}
+
+func CountPublishedPapersByTitle(title string) (int, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByTitleSortByPublishTime, []byte(title), []byte("count"))
+	if err != nil {
+		return 0, err
+	}
+	return strconv.Atoi(string(resp.Payload))
+}
+
+func CountPublishedPapersByKeyword(title string) (int, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByKeywordSortByPublishTime, []byte(title), []byte("count"))
+	if err != nil {
+		return 0, err
+	}
+	return strconv.Atoi(string(resp.Payload))
+}
+
+func FindPublishedPapers() ([]Paper, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersSortByPublishTime)
+	if err != nil {
+		return nil, err
+	}
+	var jsonPapers []jsonPaper
+	err = json.Unmarshal(resp.Payload, &jsonPapers)
+	if err != nil {
+		return nil, err
+	}
+	var papers []Paper
+	for _, paper := range jsonPapers {
+		papers = append(papers, paper.convert())
+	}
+	return papers, nil
 }
 
 func FindPublishedPapersByTitle(title string) ([]Paper, error) {
-	var resp channel.Response
-	var err error
-	if title == "" {
-		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapersSortByPublishTime)
-	} else {
-		resp, err = blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByTitleSortByPublishTime, []byte(title))
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByTitleSortByPublishTime, []byte(title))
+	if err != nil {
+		return nil, err
 	}
+	var jsonPapers []jsonPaper
+	err = json.Unmarshal(resp.Payload, &jsonPapers)
+	if err != nil {
+		return nil, err
+	}
+	var papers []Paper
+	for _, paper := range jsonPapers {
+		papers = append(papers, paper.convert())
+	}
+	return papers, nil
+}
+
+func FindPublishedPapersByKeyword(title string) ([]Paper, error) {
+	resp, err := blockchain.Query(blockchain.FuncRetrieveAcceptedPapersByKeywordSortByPublishTime, []byte(title))
 	if err != nil {
 		return nil, err
 	}

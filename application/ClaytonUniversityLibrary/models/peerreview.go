@@ -19,10 +19,10 @@ type jsonPeerReview struct {
 }
 
 func (pr jsonPeerReview) convert(i int) PeerReview {
-	createTime := time.UnixMicro(pr.CreateTime / 1000).Format("2006-02-01 15:04:05")
+	createTime := time.UnixMicro(pr.CreateTime / 1000).Format("2006-01-02 15:04:05")
 	reviewTime := ""
 	if pr.Time != 0 {
-		reviewTime = time.UnixMicro(pr.Time / 1000).Format("2006-02-01 15:04:05")
+		reviewTime = time.UnixMicro(pr.Time / 1000).Format("2006-01-02 15:04:05")
 	}
 	return PeerReview{
 		Count:      i,

@@ -27,11 +27,47 @@ type PapersController struct {
 func (c *PapersController) Get() {
 	// parse parameter
 	title := c.GetString("t")
-	// find published papers according to the parameter
-	papers, err := models.FindPublishedPapersByTitle(title)
-	if err != nil {
-		c.Abort("500")
-		return
+	keyword := c.GetString("k")
+	var mode string
+	var countPapers int
+	var papers []models.Paper
+	var err error
+	if title == "" && keyword == "" {
+		mode = "global"
+		countPapers, err = models.CountPublishedPapers()
+		if err != nil {
+			c.Abort("500")
+			return
+		}
+		papers, err = models.FindPublishedPapers()
+		if err != nil {
+			c.Abort("500")
+			return
+		}
+	} else if title != "" {
+		mode = "title"
+		countPapers, err = models.CountPublishedPapersByTitle(title)
+		if err != nil {
+			c.Abort("500")
+			return
+		}
+		papers, err = models.FindPublishedPapersByTitle(title)
+		if err != nil {
+			c.Abort("500")
+			return
+		}
+	} else {
+		mode = "keyword"
+		countPapers, err = models.CountPublishedPapersByKeyword(keyword)
+		if err != nil {
+			c.Abort("500")
+			return
+		}
+		papers, err = models.FindPublishedPapersByKeyword(keyword)
+		if err != nil {
+			c.Abort("500")
+			return
+		}
 	}
 	c.Layout = "layout.html"
 	c.TplName = "papers.html"
@@ -42,6 +78,10 @@ func (c *PapersController) Get() {
 		c.Data["isAdmin"] = user.(models.User).IsAdmin
 		c.Data["username"] = user.(models.User).Name
 	}
+	c.Data["mode"] = mode
+	c.Data["title"] = title
+	c.Data["keyword"] = keyword
+	c.Data["countPapers"] = countPapers
 	c.Data["papers"] = papers
 }
 
