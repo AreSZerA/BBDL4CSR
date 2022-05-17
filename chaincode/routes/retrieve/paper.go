@@ -279,7 +279,7 @@ func AcceptedPapersByTitleSortByPublishTime(stub shim.ChaincodeStubInterface, ar
 		return shim.Error(err.Error())
 	}
 	// check count and pagination
-	papersBytes, err := utils.MarshalByArgs(papers, args)
+	papersBytes, err := utils.MarshalByArgs(papers, args[1:])
 	if err != nil {
 		return shim.Error(err.Error())
 	}
