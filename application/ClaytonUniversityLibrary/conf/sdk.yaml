@@ -2,7 +2,7 @@ name: "dl4csr"
 version: 1.0.0
 
 client:
-  organization: clayton-university-dl4csr.org
+  organization: clayton-university.dl4csr.org
   logging:
     level: info
   cryptoconfig:

@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	channelName   = "garytonuniversitychannel"
+	channelName   = "claytonuniversitychannel"
 	chaincodeName = "dl4csr"
-	orgName       = "garyton-university.dl4csr.org"
-	peerName      = "peer1.garyton-university.dl4csr.org"
+	orgName       = "clayton-university.dl4csr.org"
+	peerName      = "peer0.clayton-university.dl4csr.org"
 	userName      = "Admin"
 	configFile    = "conf/sdk.yaml"
 )
