@@ -38,7 +38,7 @@ func PeerReviewByPaperAndReviewer(stub shim.ChaincodeStubInterface, args []strin
 	_ = json.Unmarshal(result, &peerReview)
 
 	// if the status has been reviewed, response error
-	if status == lib.StatusAccepted || status == lib.StatusRejected {
+	if peerReview.Status == lib.StatusAccepted || status == lib.StatusRejected {
 		return shim.Error(lib.ErrPeerReviewDone.Error())
 	}
 	// otherwise, update the fields
